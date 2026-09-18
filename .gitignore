@@ -1,0 +1,16 @@
+node_modules
+dist
+dist-ssr
+.firebase
+.vite-react-ssg-temp
+*.local
+.DS_Store
+npm-debug.log*
+
+# Admin dashboard: credenziali Firebase, mai da committare
+.env
+.env.local
+serviceAccountKey.json
+
+# Dati locali del Firebase Emulator Suite (npm run emulators)
+.emulator-data

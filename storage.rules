@@ -1,0 +1,17 @@
+rules_version = '2';
+
+// Lettura pubblica (le immagini caricate dal pannello sono referenziate
+// direttamente dal sito pubblico tramite il loro URL di Storage). Scrittura
+// riservata solo all'account admin autenticato.
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'trottarosario@gmail.com';
+    }
+
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
