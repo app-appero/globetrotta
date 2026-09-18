@@ -1,9 +1,10 @@
 import Seo from '../components/Seo.jsx'
 import SocialLinks from '../components/SocialLinks.jsx'
 import CTASection from '../components/CTASection.jsx'
-import about from '../data/about.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function About() {
+  const { data: about } = useContentBlock('about')
   return (
     <>
       <Seo

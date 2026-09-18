@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import SectionHeading from '../components/SectionHeading.jsx'
 import ProjectGrid from '../components/ProjectGrid.jsx'
-import { getFeaturedProjects } from '../data/projects/index.js'
+import { usePublicContent } from '../hooks/usePublicContent.jsx'
 
 export default function FeaturedProjectsSection() {
-  const featuredProjects = getFeaturedProjects()
+  const { projects } = usePublicContent()
+  const featuredProjects = projects.filter((project) => project.featured)
 
   return (
     <section className="py-16 sm:py-24">

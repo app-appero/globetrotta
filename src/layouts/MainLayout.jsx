@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
+import { PublicContentProvider } from '../hooks/usePublicContent.jsx'
 
 // HelmetProvider non va renderizzato qui: vite-react-ssg avvolge già l'intera
 // app nel proprio HelmetProvider durante il prerendering per estrarre l'head
@@ -9,7 +10,8 @@ import Footer from '../components/Footer.jsx'
 // scritti nell'HTML statico.
 export default function MainLayout() {
   return (
-    <div className="flex min-h-screen flex-col">
+    <PublicContentProvider>
+      <div className="flex min-h-screen flex-col">
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-ink-950 focus:px-4 focus:py-2 focus:text-paper-50"
@@ -21,6 +23,7 @@ export default function MainLayout() {
         <Outlet />
       </main>
       <Footer />
-    </div>
+      </div>
+    </PublicContentProvider>
   )
 }

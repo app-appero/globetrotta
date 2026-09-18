@@ -2,7 +2,7 @@ import { useParams, Link, Navigate } from 'react-router-dom'
 import Seo from '../components/Seo.jsx'
 import ProjectGallery from '../components/ProjectGallery.jsx'
 import ProjectGrid from '../components/ProjectGrid.jsx'
-import { getProjectBySlug, getRelatedProjects } from '../data/projects/index.js'
+import { usePublicContent } from '../hooks/usePublicContent.jsx'
 
 function DetailSection({ title, children }) {
   return (
@@ -28,13 +28,16 @@ function DetailList({ items }) {
 
 export default function ProjectDetail() {
   const { slug } = useParams()
-  const project = getProjectBySlug(slug)
+  const { projects } = usePublicContent()
+  const project = projects.find((item) => item.slug === slug)
 
   if (!project) {
     return <Navigate to="/progetti" replace />
   }
 
-  const relatedProjects = getRelatedProjects(project)
+  const relatedProjects = projects
+    .filter((item) => item.slug !== project.slug && item.category.some((category) => project.category.includes(category)))
+    .slice(0, 2)
 
   return (
     <>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import MobileMenu from './MobileMenu.jsx'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 const NAV_LINKS = [
   { to: '/', label: 'Home' },
@@ -11,6 +12,7 @@ const NAV_LINKS = [
 ]
 
 export default function Navbar() {
+  const { data: site } = useContentBlock('site')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -24,7 +26,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-30 border-b border-ink-800/10 bg-paper-50/90 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between sm:h-20">
         <Link to="/" className="text-fluid-base font-bold tracking-tight text-ink-950">
-          GlobeTrotta
+          {site.name}
         </Link>
 
         <nav aria-label="Menu principale" className="hidden items-center gap-1 md:flex">

@@ -15,10 +15,9 @@ import { getAllProjects } from './data/projects/index.js'
 const AdminApp = lazy(() => import('./admin/AdminApp.jsx'))
 
 /**
- * Albero delle route. `getStaticPaths` su /progetti/:slug fa sì che
- * vite-react-ssg generi automaticamente in build una pagina HTML statica
- * per ogni progetto presente in src/data/projects — nessun file va
- * aggiunto qui quando si aggiunge un nuovo progetto.
+ * Albero delle route. `getStaticPaths` usa i progetti fallback per mantenere
+ * compatibilità con il prerendering; nel browser i progetti Firestore sono la
+ * fonte di verità e possono includere anche nuovi slug senza una nuova build.
  */
 export const routes = [
   {

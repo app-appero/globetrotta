@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import SectionHeading from '../components/SectionHeading.jsx'
-import newBusiness from '../data/newBusiness.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function NewBusinessSection() {
+  const { data: newBusiness } = useContentBlock('newBusiness')
   return (
     <section className="py-16 sm:py-24">
       <div className="container-page">

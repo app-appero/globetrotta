@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
-import hero from '../data/hero.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function Hero() {
+  const { data: hero } = useContentBlock('hero')
   return (
     <section className="border-b border-ink-800/10 bg-paper-50">
       <div className="container-page py-16 sm:py-24 lg:py-28">

@@ -3,9 +3,11 @@ import Seo from '../components/Seo.jsx'
 import SectionHeading from '../components/SectionHeading.jsx'
 import ServiceCard from '../components/ServiceCard.jsx'
 import CTASection from '../components/CTASection.jsx'
-import solutions from '../data/solutions.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function Solutions() {
+  const { data } = useContentBlock('solutions')
+  const solutions = data.items || []
   return (
     <>
       <Seo

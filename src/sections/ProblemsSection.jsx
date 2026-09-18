@@ -1,8 +1,9 @@
 import SectionHeading from '../components/SectionHeading.jsx'
 import ProblemCard from '../components/ProblemCard.jsx'
-import problems from '../data/problems.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function ProblemsSection() {
+  const { data: problems } = useContentBlock('problems')
   return (
     <section className="py-16 sm:py-24">
       <div className="container-page">

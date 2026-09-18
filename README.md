@@ -3,10 +3,10 @@
 Sito personale/portfolio di Rosario Trotta — Full-Stack & AI Developer.
 
 Vetrina professionale orientata all'acquisizione di clienti (nuove attività, professionisti,
-piccole imprese, startup). Il sito pubblico è **100% statico** (nessuna dipendenza da
-Firebase a runtime) e viene pubblicato su Firebase Hosting; un pannello privato su
-`/admin` (Firebase Auth + Firestore + Storage) permette di gestire tutti i contenuti —
-progetti e testi — senza toccare il codice. Vedi la sezione [Pannello admin](#pannello-admin-admin).
+piccole imprese, startup). Il sito pubblico usa Firestore a runtime (con fallback ai dati
+statici durante il prerendering o se Firestore non è raggiungibile) e viene pubblicato su
+Firebase Hosting; un pannello privato su `/admin` (Firebase Auth + Firestore + Storage)
+permette di gestire tutti i contenuti senza toccare il codice.
 
 ## Stack
 
@@ -20,9 +20,9 @@ progetti e testi — senza toccare il codice. Vedi la sezione [Pannello admin](#
 - [Tailwind CSS](https://tailwindcss.com/) per lo stile
 - [react-helmet-async](https://github.com/staylor/react-helmet-async) per i meta tag SEO/OG per pagina
 
-Il sito pubblico non ha database, API custom o autenticazione propri. Il pannello
-`/admin` (facoltativo, per la gestione contenuti) usa Firebase Auth/Firestore/Storage,
-caricati solo quando si visita `/admin` — vedi [Pannello admin](#pannello-admin-admin).
+Il sito pubblico legge i documenti `content/*` e `projects/*` da Firestore tramite il
+client Firebase. Il pannello `/admin` usa inoltre Firebase Auth/Storage, caricati solo
+quando si visita `/admin`.
 
 ## Installazione
 
@@ -86,11 +86,10 @@ rewrite di fallback verso `index.html` per eventuali percorsi non pre-renderizza
 src/
 ├── main.jsx                 punto di ingresso (ViteReactSSG)
 ├── App.jsx                  albero delle rotte (include /admin/*, lazy-loaded)
-├── data/                     TUTTI i testi/dati del sito pubblico — generati da
-│                              `npm run sync-content` a partire da Firestore quando si usa
-│                              il pannello admin, altrimenti modificabili anche a mano
+├── data/                     fallback usati dal prerendering e quando Firestore non è
+│                              raggiungibile; la fonte di verità a runtime è Firestore
 │   ├── site.js, hero.js, problems.js, ...  un file per ogni blocco di contenuto
-│   └── projects/               un file per ogni progetto + index.js di aggregazione
+│   └── projects/               dati iniziali/fallback + index.js per la generazione statica
 ├── types/project.js          JSDoc con la struttura dati di un progetto (documentazione/autocomplete)
 ├── layouts/MainLayout.jsx    Navbar + contenuto pagina + Footer (sito pubblico)
 ├── components/                componenti riutilizzabili (Navbar, ProjectCard, Seo, ...)
@@ -102,7 +101,7 @@ src/
 
 scripts/
 ├── generate-sitemap.js       genera dist/sitemap.xml dopo la build (già esistente)
-├── sync-content.mjs           rigenera src/data/*.js da Firestore (parte di `npm run publish`)
+├── sync-content.mjs           utility legacy per rigenerare i fallback da Firestore
 ├── seed-content.mjs           one-shot: carica i contenuti attuali in Firestore
 └── lib/firebaseAdmin.mjs      client Firestore Admin condiviso dai due script sopra
 
@@ -110,9 +109,9 @@ public/
 └── projects/<slug>/          immagini dei singoli progetti
 ```
 
-`src/data` è il "content layer": tutti i testi/dati che cambiano nel tempo vivono lì,
-separati dai componenti React ("presentation layer"). Questo rende possibile in futuro
-sostituire `src/data` con un CMS (Sanity, Contentful, ecc.) senza dover riscrivere la UI.
+`src/data` contiene solo il fallback e i dati usati dal prerendering. Nel browser,
+`src/hooks/usePublicContent.jsx` sottoscrive le collezioni Firestore con `onSnapshot`:
+un salvataggio admin è quindi riflesso immediatamente senza build o publish.
 
 ## Come aggiungere un nuovo progetto
 
@@ -189,10 +188,9 @@ tuoi dati reali prima di pubblicare il sito:
 
 ## Pannello admin (`/admin`)
 
-Il sito pubblico resta 100% statico e non dipende da Firebase a runtime: legge sempre
-`src/data/*.js`, come prima. Il pannello `/admin` è uno strumento privato, separato dal
-bundle pubblico (caricato con `React.lazy`), che permette di gestire **tutti** i
-contenuti — progetti e testi di ogni sezione — da browser, senza toccare il codice.
+Il pannello `/admin` è uno strumento privato, separato dal bundle admin (caricato con
+`React.lazy`), che permette di gestire tutti i contenuti — progetti e testi di ogni
+sezione — da browser, senza toccare il codice. Il pubblico legge Firestore direttamente.
 
 I contenuti modificati dal pannello vivono in **Firestore** (e le immagini in **Firebase
 Storage**) finché non li "pubblichi": solo allora vengono scritti nei file statici che il
@@ -200,11 +198,11 @@ sito realmente serve.
 
 ```
 /admin (login) → modifichi progetti/testi → salvataggio istantaneo su Firestore/Storage
-              → tu esegui: npm run publish
+              → il sito pubblico si aggiorna tramite onSnapshot
 ```
 
-`npm run publish` esegue in sequenza: `npm run sync-content` (rigenera `src/data/*.js` e
-`src/data/projects/*.js` leggendo Firestore) → `npm run build` → `firebase deploy`.
+`npm run publish` resta disponibile per aggiornare hosting e fallback/prerendering, ma non è
+necessario per rendere visibili le modifiche ai contenuti già presenti in Firestore.
 
 ### Setup iniziale (una tantum)
 
@@ -278,10 +276,9 @@ Per passare dal test locale al progetto Firebase reale basta rimettere
 
 ### Sicurezza
 
-- Nessun accesso pubblico a Firestore/Storage: le regole (`firestore.rules`,
-  `storage.rules`) consentono lettura/scrittura solo all'utente autenticato con la tua
-  email (lo Storage resta in lettura pubblica solo per servire le immagini caricate dal
-  pannello, mai in scrittura).
+- Firestore consente lettura pubblica soltanto per `content/*` e `projects/*`, necessari
+  al sito; scrittura e tutte le altre collezioni restano riservate all'admin. Le regole
+  Storage mantengono la protezione sulle scritture e la lettura delle immagini pubbliche.
 - `/admin` è escluso da sitemap e da indicizzazione (`Disallow: /admin` in
   `public/robots.txt`, meta `noindex` sulle sue pagine).
 - `serviceAccountKey.json` e `.env.local` non vanno mai committati (già in `.gitignore`):
@@ -298,6 +295,6 @@ Per passare dal test locale al progetto Firebase reale basta rimettere
 - **CMS**: il pannello `/admin` copre questo bisogno (vedi sopra). `src/data` resta comunque
   isolato dai componenti, quindi in futuro potrebbe essere sostituito anche con un CMS
   headless diverso senza riscrivere la UI.
-- **Pubblicazione non automatica**: salvare dal pannello scrive su Firestore, non sul sito
-  pubblico. Serve eseguire `npm run publish` da terminale per rendere le modifiche visibili
-  (nessuna Cloud Function o CI/CD in questa fase, per restare senza backend custom).
+- **Aggiornamento immediato**: salvare dal pannello scrive su Firestore e il sito pubblico
+  riceve la modifica tramite listener realtime. `npm run build` resta utile per aggiornare
+  HTML prerenderizzato, sitemap e fallback, non per pubblicare i contenuti correnti.

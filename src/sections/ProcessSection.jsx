@@ -1,8 +1,10 @@
 import SectionHeading from '../components/SectionHeading.jsx'
 import ProcessStep from '../components/ProcessStep.jsx'
-import process from '../data/process.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function ProcessSection() {
+  const { data } = useContentBlock('process')
+  const process = data.items || []
   return (
     <section className="bg-paper-100 py-16 sm:py-24">
       <div className="container-page">

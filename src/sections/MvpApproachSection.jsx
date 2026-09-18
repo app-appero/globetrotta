@@ -1,7 +1,8 @@
 import SectionHeading from '../components/SectionHeading.jsx'
-import mvpApproach from '../data/mvpApproach.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function MvpApproachSection() {
+  const { data: mvpApproach } = useContentBlock('mvpApproach')
   return (
     <section className="bg-paper-100 py-16 sm:py-24">
       <div className="container-page">

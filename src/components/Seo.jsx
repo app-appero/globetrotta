@@ -1,9 +1,5 @@
 import { Helmet } from 'react-helmet-async'
-import site from '../data/site.js'
-
-const SITE_NAME = site.name
-const SITE_URL = site.url
-const DEFAULT_IMAGE = `${SITE_URL}/og-default.svg`
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 /**
  * Imposta title, meta description, canonical e Open Graph/Twitter card
@@ -15,12 +11,16 @@ export default function Seo({
   title,
   description,
   path = '/',
-  image = DEFAULT_IMAGE,
+  image,
   type = 'website',
 }) {
+  const { data: site } = useContentBlock('site')
+  const SITE_NAME = site.name
+  const SITE_URL = site.url
+  const DEFAULT_IMAGE = `${SITE_URL}/og-default.svg`
   const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`
   const url = `${SITE_URL}${path}`
-  const absoluteImage = image.startsWith('http') ? image : `${SITE_URL}${image}`
+  const absoluteImage = (image || DEFAULT_IMAGE).startsWith('http') ? image || DEFAULT_IMAGE : `${SITE_URL}${image || DEFAULT_IMAGE}`
 
   return (
     <Helmet>

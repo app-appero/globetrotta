@@ -3,11 +3,11 @@ import SectionHeading from '../components/SectionHeading.jsx'
 import ProjectFilters from '../components/ProjectFilters.jsx'
 import ProjectGrid from '../components/ProjectGrid.jsx'
 import { useProjectFilters } from '../hooks/useProjectFilters.js'
-import { getAllProjects, getCategories } from '../data/projects/index.js'
+import { usePublicContent } from '../hooks/usePublicContent.jsx'
 
 export default function Projects() {
-  const allProjects = getAllProjects()
-  const categories = getCategories()
+  const { projects: allProjects } = usePublicContent()
+  const categories = ['Tutti', ...Array.from(new Set(allProjects.flatMap((project) => project.category))).sort()]
   const { activeCategory, setActiveCategory, filteredProjects } = useProjectFilters(allProjects, categories)
 
   return (

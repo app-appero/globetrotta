@@ -1,8 +1,9 @@
 import SectionHeading from '../components/SectionHeading.jsx'
 import TechStack from '../components/TechStack.jsx'
-import techStack from '../data/techStack.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function TechStackSection() {
+  const { data: techStack } = useContentBlock('techStack')
   return (
     <section className="py-16 sm:py-24">
       <div className="container-page">

@@ -7,7 +7,7 @@ import { CONTENT_BLOCKS } from '../schemas/contentBlocks.js'
 export default function ContentEditor() {
   const { blockId } = useParams()
   const block = CONTENT_BLOCKS.find((b) => b.id === blockId)
-  const { data, loading, save } = useContentDoc(blockId)
+  const { data, loading, error, save } = useContentDoc(blockId)
   const [saving, setSaving] = useState(false)
   const [savedAt, setSavedAt] = useState('')
 
@@ -17,6 +17,14 @@ export default function ContentEditor() {
 
   if (loading) {
     return <p className="text-fluid-sm text-ink-500">Caricamento...</p>
+  }
+
+  if (error) {
+    return (
+      <p className="text-fluid-sm text-red-600">
+        Impossibile caricare questo contenuto: {error}
+      </p>
+    )
   }
 
   async function handleSave(nextData) {
@@ -30,8 +38,7 @@ export default function ContentEditor() {
     <div>
       <h1 className="text-fluid-xl font-bold text-ink-950">{block.label}</h1>
       <p className="mt-1 text-fluid-sm text-ink-500">
-        Le modifiche si salvano su Firestore. Per pubblicarle sul sito esegui{' '}
-        <code className="rounded bg-ink-950/5 px-1.5 py-0.5">npm run publish</code> dal terminale.
+        Le modifiche si salvano su Firestore e sono visibili immediatamente sul sito pubblico.
       </p>
 
       <div className="mt-8">

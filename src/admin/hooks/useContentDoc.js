@@ -34,5 +34,5 @@ export function useContentDoc(blockId) {
     [blockId],
   )
 
-  return { data, loading, error, save }
+  return { data: data ?? {}, loading, error, save }
 }

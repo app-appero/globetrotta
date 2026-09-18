@@ -1,9 +1,10 @@
 import Seo from '../components/Seo.jsx'
 import SectionHeading from '../components/SectionHeading.jsx'
-import site from '../data/site.js'
-import contact from '../data/contact.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function Contact() {
+  const { data: site } = useContentBlock('site')
+  const { data: contact } = useContentBlock('contact')
   const channels = [
     {
       label: 'Email',

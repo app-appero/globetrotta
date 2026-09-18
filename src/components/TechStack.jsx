@@ -1,6 +1,7 @@
-import techStack from '../data/techStack.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function TechStack() {
+  const { data: techStack } = useContentBlock('techStack')
   return (
     <div>
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">

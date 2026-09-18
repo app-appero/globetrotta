@@ -1,10 +1,4 @@
-import site from '../data/site.js'
-
-const LINKS = [
-  { label: 'LinkedIn', href: site.linkedinUrl, icon: 'linkedin' },
-  { label: 'GitHub', href: site.githubUrl, icon: 'github' },
-  { label: 'Email', href: `mailto:${site.email}`, icon: 'mail' },
-]
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 const ICONS = {
   linkedin: (
@@ -19,9 +13,15 @@ const ICONS = {
 }
 
 export default function SocialLinks({ className = '' }) {
+  const { data: site } = useContentBlock('site')
+  const links = [
+    { label: 'LinkedIn', href: site.linkedinUrl, icon: 'linkedin' },
+    { label: 'GitHub', href: site.githubUrl, icon: 'github' },
+    { label: 'Email', href: `mailto:${site.email}`, icon: 'mail' },
+  ]
   return (
     <ul className={`flex items-center gap-3 ${className}`}>
-      {LINKS.map((link) => (
+      {links.map((link) => (
         <li key={link.label}>
           <a
             href={link.href}

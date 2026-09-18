@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import SectionHeading from '../components/SectionHeading.jsx'
 import ServiceCard from '../components/ServiceCard.jsx'
-import solutions from '../data/solutions.js'
+import { useContentBlock } from '../hooks/usePublicContent.jsx'
 
 export default function SolutionsSection() {
+  const { data } = useContentBlock('solutions')
+  const solutions = data.items || []
   return (
     <section className="bg-paper-100 py-16 sm:py-24">
       <div className="container-page">
