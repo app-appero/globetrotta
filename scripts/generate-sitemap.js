@@ -1,0 +1,26 @@
+import { writeFile } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
+import { dirname, resolve } from 'node:path'
+
+import { getAllProjects } from '../src/data/projects/index.js'
+import site from '../src/data/site.js'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const distDir = resolve(__dirname, '../dist')
+
+const staticPaths = ['/', '/progetti', '/soluzioni', '/chi-sono', '/contatti']
+const projectPaths = getAllProjects().map((project) => `/progetti/${project.slug}`)
+const paths = [...staticPaths, ...projectPaths]
+
+const urlEntries = paths
+  .map((path) => {
+    const loc = `${site.url}${path}`
+    const priority = path === '/' ? '1.0' : '0.7'
+    return `  <url>\n    <loc>${loc}</loc>\n    <priority>${priority}</priority>\n  </url>`
+  })
+  .join('\n')
+
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urlEntries}\n</urlset>\n`
+
+await writeFile(resolve(distDir, 'sitemap.xml'), sitemap, 'utf-8')
+console.log(`sitemap.xml generato con ${paths.length} url in dist/sitemap.xml`)

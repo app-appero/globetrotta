@@ -1,0 +1,25 @@
+rules_version = '2';
+
+// Il sito legge content e projects direttamente da Firestore. Gli altri
+// documenti restano privati; le scritture sono sempre riservate all'admin.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == 'trottarosario@gmail.com';
+    }
+
+    match /content/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /projects/{document} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
