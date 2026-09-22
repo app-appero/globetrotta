@@ -35,7 +35,7 @@ export default function SocialLinks({ className = '' }) {
     { label: 'Email', href: site.email ? `mailto:${site.email}` : '', icon: 'mail' },
   ].filter((link) => link.href)
   return (
-    <ul className={`flex items-center gap-3 ${className}`}>
+    <ul className={`flex flex-wrap items-center gap-3 ${className}`}>
       {links.map((link) => (
         <li key={link.label}>
           <a
