@@ -12,16 +12,16 @@ export default function ProjectCard({ project }) {
       to={`/progetti/${project.slug}`}
       className="card group flex h-full flex-col overflow-hidden"
     >
-      <div className="aspect-[16/9] w-full overflow-hidden bg-paper-200">
+      <div className="aspect-[16/9] w-full overflow-hidden bg-ink-950 p-2">
         {isPlaceholderImage(project.coverImage) ? (
-          <PlaceholderVisual label={project.title} />
+          <PlaceholderVisual label={project.title} className="rounded-lg" />
         ) : (
           <img
             src={project.coverImage}
             alt={`Immagine del progetto ${project.title}`}
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover transition-transform duration-300 ease-smooth group-hover:scale-[1.03]"
+            className="h-full w-full rounded-lg object-cover transition-transform duration-300 ease-smooth group-hover:scale-[1.03]"
           />
         )}
       </div>
