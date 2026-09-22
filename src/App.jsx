@@ -8,6 +8,7 @@ import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
 import Privacy from './pages/Privacy.jsx'
 import NotFound from './pages/NotFound.jsx'
+import RouteErrorBoundary from './components/RouteErrorBoundary.jsx'
 
 // Caricato solo quando si visita /admin: tiene il SDK Firebase (Auth/
 // Firestore/Storage) fuori dal bundle e dal prerendering delle pagine
@@ -22,6 +23,7 @@ export const routes = [
   {
     path: '/',
     element: <MainLayout />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       { index: true, element: <Home /> },
       { path: 'progetti', element: <Projects /> },
@@ -43,5 +45,6 @@ export const routes = [
         <AdminApp />
       </Suspense>
     ),
+    errorElement: <RouteErrorBoundary />,
   },
 ]
