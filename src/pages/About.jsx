@@ -23,12 +23,14 @@ export default function About() {
       <section className="py-14 sm:py-20">
         <div className="container-page grid grid-cols-1 gap-10 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-16">
           <div>
-            {isPlaceholderPhoto(photo) ? (
-              <PlaceholderVisual label="Foto non disponibile" className="aspect-square w-full max-w-xs rounded-2xl" />
-            ) : (
-              <img src={photo} alt={`Ritratto di ${about.name}`} decoding="async" className="aspect-square w-full max-w-xs rounded-2xl object-cover" />
-            )}
-            <SocialLinks className="mt-6" />
+            <div className="aspect-square w-full max-w-xs overflow-hidden rounded-2xl">
+              {isPlaceholderPhoto(photo) ? (
+                <PlaceholderVisual label="Foto non disponibile" />
+              ) : (
+                <img src={photo} alt={`Ritratto di ${about.name}`} decoding="async" className="h-full w-full object-cover" />
+              )}
+            </div>
+            <SocialLinks className="mt-6 justify-center" />
           </div>
 
           <div>
