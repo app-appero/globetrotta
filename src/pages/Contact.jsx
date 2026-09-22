@@ -31,7 +31,7 @@ export default function Contact() {
     },
     {
       label: 'LinkedIn',
-      value: 'in/rosario-trotta',
+      value: 'in/rosario-michele-trotta',
       href: normalizeExternalUrl(site.linkedinUrl),
       description: contact.channelDescriptions.linkedin,
       enabled: Boolean(site.linkedinUrl),

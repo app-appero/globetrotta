@@ -10,7 +10,7 @@ const contact = {
   noteBody:
     "Non serve un brief formale. Basta che mi racconti in poche righe di cosa si tratta: hai un'idea da sviluppare, un'attività manuale da automatizzare, o strumenti che vorresti collegare o migliorare. Ti rispondo per capire meglio la tua situazione e valutare insieme come posso aiutarti.",
   formTitle: 'Raccontami da dove partire',
-  formDescription: 'Il form è pronto per essere configurato, ma non invia ancora dati: puoi usare i canali disponibili qui sopra.',
+  formDescription: 'Compila il modulo raccontandomi brevemente la tua esigenza. Riceverò la richiesta via email e ti risponderò per approfondire il progetto.',
   formUnavailableMessage: 'L’invio online non è ancora configurato. Usa Email o LinkedIn per contattarmi.',
 }
 

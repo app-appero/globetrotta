@@ -6,7 +6,7 @@ import { useProjectFilters } from '../hooks/useProjectFilters.js'
 import { usePublicContent } from '../hooks/usePublicContent.jsx'
 
 export default function Projects() {
-  const { projects: allProjects } = usePublicContent()
+  const { projects: allProjects, loading, error } = usePublicContent()
   const categories = ['Tutti', ...Array.from(new Set(allProjects.flatMap((project) => project.category))).sort()]
   const { activeCategory, setActiveCategory, filteredProjects } = useProjectFilters(allProjects, categories)
 
@@ -33,8 +33,14 @@ export default function Projects() {
         <div className="container-page">
           <ProjectFilters categories={categories} activeCategory={activeCategory} onChange={setActiveCategory} />
 
+          {error && !loading && (
+            <p role="alert" className="mt-6 rounded-xl border border-ink-800/10 bg-paper-100 px-4 py-3 text-fluid-sm text-ink-600">
+              Non riusciamo ad aggiornare l’elenco dei progetti in questo momento. Potresti vedere dati non aggiornati.
+            </p>
+          )}
+
           <div className="mt-8">
-            <ProjectGrid projects={filteredProjects} />
+            <ProjectGrid projects={filteredProjects} loading={loading} />
           </div>
         </div>
       </section>

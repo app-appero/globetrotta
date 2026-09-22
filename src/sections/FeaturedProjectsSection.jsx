@@ -4,7 +4,7 @@ import ProjectGrid from '../components/ProjectGrid.jsx'
 import { usePublicContent } from '../hooks/usePublicContent.jsx'
 
 export default function FeaturedProjectsSection() {
-  const { projects } = usePublicContent()
+  const { projects, loading } = usePublicContent()
   const featuredProjects = projects.filter((project) => project.featured)
 
   return (
@@ -18,7 +18,7 @@ export default function FeaturedProjectsSection() {
         </div>
 
         <div className="mt-10">
-          <ProjectGrid projects={featuredProjects} />
+          <ProjectGrid projects={featuredProjects} loading={loading} />
         </div>
       </div>
     </section>

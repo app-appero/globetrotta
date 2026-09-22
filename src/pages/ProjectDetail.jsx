@@ -35,10 +35,52 @@ function DetailList({ items }) {
   )
 }
 
+function ProjectDetailStatus({ eyebrow, title, description, action }) {
+  return (
+    <section className="flex min-h-[60vh] items-center justify-center py-20">
+      <div className="container-page text-center">
+        <p className="eyebrow">{eyebrow}</p>
+        <h1 className="mt-3 text-fluid-2xl font-bold text-ink-950">{title}</h1>
+        <p className="mt-4 text-fluid-base text-ink-600">{description}</p>
+        {action}
+      </div>
+    </section>
+  )
+}
+
 export default function ProjectDetail() {
   const { slug } = useParams()
-  const { projects } = usePublicContent()
+  const { projects, loading, error, retry } = usePublicContent()
   const project = projects.find((item) => item.slug === slug)
+
+  // Al primo caricamento (URL diretto, refresh, nuova scheda) Firestore non ha
+  // ancora risposto: "projects" è ancora vuoto qui. Senza questo controllo il
+  // progetto risulterebbe erroneamente "non esistente" e si finirebbe
+  // rimandati a /progetti prima ancora che i dati arrivino.
+  if (loading) {
+    return (
+      <ProjectDetailStatus
+        eyebrow="Caricamento"
+        title="Caricamento del progetto…"
+        description="Un attimo, stiamo recuperando i dati del progetto."
+      />
+    )
+  }
+
+  if (!project && error) {
+    return (
+      <ProjectDetailStatus
+        eyebrow="Errore"
+        title="Non riusciamo a caricare questo progetto."
+        description="Si è verificato un problema di connessione. Riprova tra qualche istante."
+        action={
+          <button type="button" onClick={retry} className="btn-primary mt-8 inline-flex">
+            Riprova
+          </button>
+        }
+      />
+    )
+  }
 
   if (!project) {
     return <Navigate to="/progetti" replace />

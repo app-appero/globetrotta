@@ -11,7 +11,7 @@ export default function ProjectFilters({ categories, activeCategory, onChange })
             aria-pressed={isActive}
             className={`min-h-[44px] rounded-full px-4 py-2 text-fluid-sm font-medium transition-colors duration-200 ease-smooth focus-visible:outline-offset-4 ${
               isActive
-                ? 'bg-ink-950 text-paper-50'
+                ? 'btn-ink'
                 : 'border border-ink-800/15 text-ink-700 hover:border-ink-800/40'
             }`}
           >

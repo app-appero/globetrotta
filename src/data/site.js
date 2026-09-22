@@ -15,7 +15,7 @@ const site = {
   },
   copyrightYear: '2026',
   email: 'hello@globetrotta.com',
-  linkedinUrl: 'https://www.linkedin.com/in/rosario-trotta',
+  linkedinUrl: 'https://www.linkedin.com/in/rosario-michele-trotta',
   githubUrl: 'https://github.com/rosariotrotta',
   upworkUrl: '',
   freelancerUrl: '',

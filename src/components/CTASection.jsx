@@ -18,7 +18,7 @@ export default function CTASection({
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link
               to={primaryTo}
-              className="btn w-full bg-paper-50 text-ink-950 hover:bg-accent-500 hover:text-paper-50 sm:w-auto"
+              className="btn btn-invert w-full sm:w-auto"
             >
               {primaryLabel}
             </Link>

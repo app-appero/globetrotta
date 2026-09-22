@@ -100,7 +100,7 @@ export default function ProjectGallery({ gallery, demoVideoUrl }) {
           <button
             type="button"
             onClick={() => setSelectedImage(null)}
-            className="absolute right-4 top-4 rounded-full bg-paper-50 px-3 py-2 text-fluid-sm font-semibold text-ink-950"
+            className="btn-invert absolute right-4 top-4 rounded-full px-3 py-2 text-fluid-sm font-semibold"
             aria-label="Chiudi immagine ingrandita"
           >
             Chiudi

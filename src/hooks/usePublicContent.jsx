@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { collection, onSnapshot, query, where } from 'firebase/firestore'
 import { getFirebaseDb } from '../firebaseClient.js'
 import { fallbackContent } from '../data/publicFallback.js'
@@ -16,6 +16,13 @@ export function PublicContentProvider({ children }) {
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [retryToken, setRetryToken] = useState(0)
+
+  const retry = useCallback(() => {
+    setError('')
+    setLoading(true)
+    setRetryToken((token) => token + 1)
+  }, [])
 
   useEffect(() => {
     document.documentElement.dataset.theme = content.site?.theme === 'dark' ? 'dark' : 'light'
@@ -77,9 +84,12 @@ export function PublicContentProvider({ children }) {
       unsubscribeContent?.()
       unsubscribeProjects?.()
     }
-  }, [])
+  }, [retryToken])
 
-  const value = useMemo(() => ({ content, projects, loading, error }), [content, projects, loading, error])
+  const value = useMemo(
+    () => ({ content, projects, loading, error, retry }),
+    [content, projects, loading, error, retry],
+  )
   return <PublicContentContext.Provider value={value}>{children}</PublicContentContext.Provider>
 }
 
