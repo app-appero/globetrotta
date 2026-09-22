@@ -1,4 +1,5 @@
 import { useContentBlock } from '../hooks/usePublicContent.jsx'
+import { normalizeExternalUrl } from '../utils/externalUrl.js'
 
 const ICONS = {
   linkedin: (
@@ -10,15 +11,29 @@ const ICONS = {
   mail: (
     <path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm0 2.2V18h16V7.2l-7.4 5.55a1 1 0 0 1-1.2 0L4 7.2Zm.6-.7 7.4 5.55L19.4 6.5H4.6Z" />
   ),
+  upwork: <text x="4" y="16" fontSize="12" fontWeight="700">Up</text>,
+  freelancer: <text x="3" y="16" fontSize="11" fontWeight="700">Fr</text>,
+  fiverr: <text x="3" y="16" fontSize="11" fontWeight="700">Fi</text>,
+  instagram: (
+    <path d="M7.5 2.75h9A4.75 4.75 0 0 1 21.25 7.5v9a4.75 4.75 0 0 1-4.75 4.75h-9A4.75 4.75 0 0 1 2.75 16.5v-9A4.75 4.75 0 0 1 7.5 2.75Zm0 2A2.75 2.75 0 0 0 4.75 7.5v9a2.75 2.75 0 0 0 2.75 2.75h9a2.75 2.75 0 0 0 2.75-2.75v-9a2.75 2.75 0 0 0-2.75-2.75h-9Zm4.5 2.25a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.25-2.5a1.125 1.125 0 1 1 0 2.25 1.125 1.125 0 0 1 0-2.25Z" />
+  ),
+  tiktok: (
+    <path d="M14.25 3h2.2c.25 1.63 1.2 2.76 2.8 3.35v2.2a8.1 8.1 0 0 1-2.78-.88v5.2a5.13 5.13 0 1 1-4.43-5.08v2.25a2.9 2.9 0 1 0 2.2 2.83V3Z" />
+  ),
 }
 
 export default function SocialLinks({ className = '' }) {
   const { data: site } = useContentBlock('site')
   const links = [
-    { label: 'LinkedIn', href: site.linkedinUrl, icon: 'linkedin' },
-    { label: 'GitHub', href: site.githubUrl, icon: 'github' },
-    { label: 'Email', href: `mailto:${site.email}`, icon: 'mail' },
-  ]
+    { label: 'LinkedIn', href: normalizeExternalUrl(site.linkedinUrl), icon: 'linkedin' },
+    { label: 'GitHub', href: normalizeExternalUrl(site.githubUrl), icon: 'github' },
+    { label: 'Upwork', href: normalizeExternalUrl(site.upworkUrl), icon: 'upwork' },
+    { label: 'Freelancer', href: normalizeExternalUrl(site.freelancerUrl), icon: 'freelancer' },
+    { label: 'Fiverr', href: normalizeExternalUrl(site.fiverrUrl), icon: 'fiverr' },
+    { label: 'Instagram', href: normalizeExternalUrl(site.instagramUrl), icon: 'instagram' },
+    { label: 'TikTok', href: normalizeExternalUrl(site.tiktokUrl), icon: 'tiktok' },
+    { label: 'Email', href: site.email ? `mailto:${site.email}` : '', icon: 'mail' },
+  ].filter((link) => link.href)
   return (
     <ul className={`flex items-center gap-3 ${className}`}>
       {links.map((link) => (
@@ -28,9 +43,9 @@ export default function SocialLinks({ className = '' }) {
             target={link.href.startsWith('http') ? '_blank' : undefined}
             rel={link.href.startsWith('http') ? 'noreferrer' : undefined}
             aria-label={link.label}
-            className="flex h-11 w-11 items-center justify-center rounded-full border border-ink-800/15 text-ink-700 transition-colors duration-200 ease-smooth hover:border-accent-500 hover:text-accent-600"
+            className="flex h-14 w-14 items-center justify-center rounded-full border border-ink-800/15 text-ink-700 transition-colors duration-200 ease-smooth hover:border-accent-500 hover:text-accent-600"
           >
-            <svg viewBox="0 0 24 24" fill="currentColor" className="h-[18px] w-[18px]" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="h-6 w-6" aria-hidden="true">
               {ICONS[link.icon]}
             </svg>
           </a>

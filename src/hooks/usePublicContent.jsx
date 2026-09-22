@@ -1,15 +1,25 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { collection, onSnapshot, query, where } from 'firebase/firestore'
 import { getFirebaseDb } from '../firebaseClient.js'
-import { fallbackContent, fallbackProjects } from '../data/publicFallback.js'
+import { fallbackContent } from '../data/publicFallback.js'
+import { sortProjects } from '../utils/projectPresentation.js'
 
 const PublicContentContext = createContext(null)
+const REMOVED_PROJECT_SLUGS = new Set(['oracle-tennis', 'studio-flow', 'doc-pilot'])
+
+function isPublicProject(project) {
+  return project.status !== 'draft'
+}
 
 export function PublicContentProvider({ children }) {
   const [content, setContent] = useState(fallbackContent)
-  const [projects, setProjects] = useState(fallbackProjects)
+  const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = content.site?.theme === 'dark' ? 'dark' : 'light'
+  }, [content.site?.theme])
 
   useEffect(() => {
     let contentReady = false
@@ -24,6 +34,10 @@ export function PublicContentProvider({ children }) {
         if (!active) return
         const next = { ...fallbackContent }
         snapshot.docs.forEach((document) => {
+          // La Hero pubblicata deriva dai file versionati e dalla build verificata.
+          // Evita che un documento Firestore precedente reintroduca testi diversi
+          // dopo l'hydration.
+          if (document.id === 'hero') return
           next[document.id] = document.data()
         })
         setContent(next)
@@ -35,9 +49,16 @@ export function PublicContentProvider({ children }) {
         contentReady = true
         if (projectsReady) setLoading(false)
       })
-      unsubscribeProjects = onSnapshot(collection(db, 'projects'), (snapshot) => {
+      unsubscribeProjects = onSnapshot(query(collection(db, 'projects'), where('status', '!=', 'draft')), (snapshot) => {
         if (!active) return
-        setProjects(snapshot.docs.map((document) => ({ id: document.id, ...document.data() })))
+        const firestoreProjects = snapshot.docs.filter((document) => {
+          const data = document.data()
+          return !REMOVED_PROJECT_SLUGS.has(data.slug || document.id)
+        }).map((document) => {
+          const data = document.data()
+          return { ...data, id: document.id }
+        })
+        setProjects(sortProjects(firestoreProjects.filter(isPublicProject)))
         projectsReady = true
         if (contentReady) setLoading(false)
       }, (snapshotError) => {

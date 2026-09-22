@@ -1,11 +1,11 @@
 const hero = {
   eyebrow: 'Rosario Trotta — Full-Stack & AI Developer',
-  headline: 'Trasformo idee e problemi reali in prodotti digitali.',
+  headline: 'Costruisco strumenti digitali per semplificare il tuo lavoro.',
   subheadline:
-    "Aiuto nuove attività, professionisti e piccole imprese a sviluppare applicazioni, strumenti digitali, automazioni e soluzioni AI pensate per esigenze concrete.",
-  ctaPrimaryLabel: 'Parlami del tuo progetto',
-  ctaSecondaryLabel: 'Guarda cosa ho realizzato',
-  microCopy: 'Non devi sapere quale tecnologia utilizzare. Partiamo da ciò che vuoi ottenere.',
+    'Partiamo dal problema: sviluppo web app, gestionali, automazioni e soluzioni AI su misura per professionisti, nuove attività e piccole imprese.',
+  ctaPrimaryLabel: 'Parliamo del tuo progetto',
+  ctaSecondaryLabel: 'Guarda i progetti',
+  microCopy: 'Non devi conoscere la tecnologia: definiamo prima cosa serve davvero.',
 }
 
 export default hero

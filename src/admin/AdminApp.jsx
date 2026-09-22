@@ -8,8 +8,12 @@ import Dashboard from './pages/Dashboard.jsx'
 import ProjectsList from './pages/ProjectsList.jsx'
 import ProjectForm from './pages/ProjectForm.jsx'
 import ContentEditor from './pages/ContentEditor.jsx'
+import ContactRequests from './pages/ContactRequests.jsx'
+import { useAdminTheme } from './hooks/useAdminTheme.js'
 
 export default function AdminApp() {
+  useAdminTheme()
+
   return (
     <AuthProvider>
       <Helmet>
@@ -29,6 +33,7 @@ export default function AdminApp() {
           <Route path="progetti/nuovo" element={<ProjectForm mode="create" />} />
           <Route path="progetti/:id" element={<ProjectForm mode="edit" />} />
           <Route path="contenuti/:blockId" element={<ContentEditor />} />
+          <Route path="richieste" element={<ContactRequests />} />
         </Route>
       </Routes>
     </AuthProvider>

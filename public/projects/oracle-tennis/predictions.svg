@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
-  <rect width="1200" height="800" fill="#f2f0ec"/>
-  <rect x="0.5" y="0.5" width="1199" height="799" fill="none" stroke="#e7e4dd" stroke-width="1"/>
-  <text x="60" y="70" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5" fill="#3a3fd6">ANTEPRIMA DA SOSTITUIRE</text>
-  <text x="60" y="130" font-family="Arial, sans-serif" font-size="30" font-weight="800" fill="#17171b">Previsioni modello ML</text>
-  <rect x="60" y="180" width="1080" height="120" rx="12" fill="#ffffff" stroke="#e7e4dd"/>
-  <rect x="60" y="320" width="1080" height="120" rx="12" fill="#ffffff" stroke="#e7e4dd"/>
-  <rect x="60" y="460" width="1080" height="120" rx="12" fill="#ffffff" stroke="#e7e4dd"/>
-</svg>

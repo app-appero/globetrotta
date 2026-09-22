@@ -9,7 +9,7 @@ import techStack from './techStack.js'
 import about from './about.js'
 import finalCta from './finalCta.js'
 import contact from './contact.js'
-import { getAllProjects } from './projects/index.js'
+import privacy from './privacy.js'
 
 export const fallbackContent = {
   site,
@@ -23,6 +23,5 @@ export const fallbackContent = {
   about,
   finalCta,
   contact,
+  privacy,
 }
-
-export const fallbackProjects = getAllProjects()

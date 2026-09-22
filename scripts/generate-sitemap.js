@@ -2,15 +2,13 @@ import { writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
-import { getAllProjects } from '../src/data/projects/index.js'
 import site from '../src/data/site.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const distDir = resolve(__dirname, '../dist')
 
-const staticPaths = ['/', '/progetti', '/soluzioni', '/chi-sono', '/contatti']
-const projectPaths = getAllProjects().map((project) => `/progetti/${project.slug}`)
-const paths = [...staticPaths, ...projectPaths]
+const staticPaths = ['/', '/progetti', '/soluzioni', '/chi-sono', '/contatti', '/privacy']
+const paths = staticPaths
 
 const urlEntries = paths
   .map((path) => {

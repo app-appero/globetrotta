@@ -4,7 +4,12 @@ import Seo from '../components/Seo.jsx'
 export default function NotFound() {
   return (
     <>
-      <Seo title="Pagina non trovata" description="La pagina che cerchi non esiste o è stata spostata." path="/404" />
+      <Seo
+        title="Pagina non trovata"
+        description="La pagina che cerchi non esiste o è stata spostata."
+        path="/404"
+        noindex
+      />
 
       <section className="flex min-h-[60vh] items-center justify-center py-20">
         <div className="container-page text-center">

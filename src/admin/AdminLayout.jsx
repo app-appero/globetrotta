@@ -35,6 +35,9 @@ export default function AdminLayout() {
           <NavLink to="/admin/progetti" className={navClass}>
             Progetti
           </NavLink>
+          <NavLink to="/admin/richieste" className={navClass}>
+            Richieste
+          </NavLink>
           <p className="mt-4 w-full px-3 text-fluid-xs font-semibold uppercase tracking-wide text-ink-500 lg:mt-6">
             Contenuti
           </p>

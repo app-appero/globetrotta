@@ -7,10 +7,14 @@
  * @property {string} shortDescription - Descrizione breve per card e meta description.
  * @property {string} description - Descrizione estesa per l'overview del case study.
  * @property {string[]} category - Categorie usate per i filtri (es. "Full Stack", "AI", "Machine Learning", "SaaS", "Automation").
+ * @property {'personal'|'client'|'collaboration'|'other'} origin - Provenienza del progetto, distinta dallo stato.
  * @property {string} year - Anno di realizzazione o ultimo aggiornamento.
- * @property {'In produzione'|'Concept'|'MVP'|'Completato'} status - Stato del progetto.
+ * @property {number} order - Ordine di visualizzazione crescente.
+ * @property {'draft'|'in-development'|'beta'|'online'} status - Stato del progetto.
  * @property {string} role - Ruolo ricoperto (es. "Full-Stack & AI Developer").
  * @property {boolean} featured - Se true, compare tra i progetti in evidenza in home.
+ * @property {boolean} mobileBrowser - Se true, il progetto è adattato ai browser mobile.
+ * @property {boolean} mobileApp - Se true, il progetto è disponibile come app mobile.
  * @property {string} coverImage - Percorso immagine cover, es. /projects/slug/cover.webp.
  * @property {{src: string, alt: string, caption?: string}[]} [gallery] - Galleria immagini opzionale.
  * @property {string} problem - Il problema affrontato.

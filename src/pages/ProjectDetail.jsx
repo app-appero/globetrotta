@@ -3,6 +3,15 @@ import Seo from '../components/Seo.jsx'
 import ProjectGallery from '../components/ProjectGallery.jsx'
 import ProjectGrid from '../components/ProjectGrid.jsx'
 import { usePublicContent } from '../hooks/usePublicContent.jsx'
+import { getProjectOriginLabel, getProjectStatusLabel } from '../utils/projectPresentation.js'
+
+function isPlaceholderImage(src) {
+  return !src || (src.startsWith('/projects/') && src.endsWith('.svg'))
+}
+
+function hasAvailableGallery(project) {
+  return (project.gallery || []).some((image) => !isPlaceholderImage(image.src))
+}
 
 function DetailSection({ title, children }) {
   return (
@@ -58,18 +67,28 @@ export default function ProjectDetail() {
 
             <dl className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-fluid-sm">
               <div>
+                <dt className="text-ink-500">Tipologia</dt>
+                <dd className="font-medium text-ink-900">{getProjectOriginLabel(project.origin)}</dd>
+              </div>
+              <div>
                 <dt className="text-ink-500">Anno</dt>
                 <dd className="font-medium text-ink-900">{project.year}</dd>
               </div>
               <div>
                 <dt className="text-ink-500">Stato</dt>
-                <dd className="font-medium text-ink-900">{project.status}</dd>
+                <dd className="font-medium text-ink-900">{getProjectStatusLabel(project.status)}</dd>
               </div>
               <div>
                 <dt className="text-ink-500">Ruolo</dt>
                 <dd className="font-medium text-ink-900">{project.role}</dd>
               </div>
             </dl>
+            {(project.mobileBrowser || project.mobileApp) && (
+              <div className="mt-5 flex flex-wrap gap-2">
+                {project.mobileBrowser && <span className="tag">Browser mobile</span>}
+                {project.mobileApp && <span className="tag">App mobile</span>}
+              </div>
+            )}
 
             {(project.githubUrl || project.liveUrl) && (
               <div className="mt-8 flex flex-wrap gap-3">
@@ -87,14 +106,6 @@ export default function ProjectDetail() {
             )}
           </div>
         </header>
-
-        <div className="aspect-[16/9] w-full bg-paper-200">
-          <img
-            src={project.coverImage}
-            alt={`Anteprima del progetto ${project.title}`}
-            className="h-full w-full object-cover"
-          />
-        </div>
 
         <div className="container-page">
           <DetailSection title="Overview">
@@ -159,7 +170,7 @@ export default function ProjectDetail() {
             </DetailSection>
           )}
 
-          {(project.gallery?.length > 0 || project.demoVideoUrl) && (
+          {(hasAvailableGallery(project) || project.demoVideoUrl) && (
             <section className="border-t border-ink-800/10 py-10 sm:py-12">
               <h2 className="text-fluid-xl font-bold text-ink-950">Galleria</h2>
               <div className="mt-6">

@@ -1,5 +1,7 @@
 import { Helmet } from 'react-helmet-async'
 import { useContentBlock } from '../hooks/usePublicContent.jsx'
+import { SITE_URL as CONFIGURED_SITE_URL } from '../data/site.js'
+import { normalizeExternalUrl } from '../utils/externalUrl.js'
 
 /**
  * Imposta title, meta description, canonical e Open Graph/Twitter card
@@ -13,19 +15,39 @@ export default function Seo({
   path = '/',
   image,
   type = 'website',
+  noindex = false,
 }) {
   const { data: site } = useContentBlock('site')
   const SITE_NAME = site.name
-  const SITE_URL = site.url
-  const DEFAULT_IMAGE = `${SITE_URL}/og-default.svg`
+  const SITE_URL = site.url || CONFIGURED_SITE_URL
+  const DEFAULT_IMAGE = `${SITE_URL}${site.assets?.ogImage || '/og-default.svg'}`
   const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`
   const url = `${SITE_URL}${path}`
   const absoluteImage = (image || DEFAULT_IMAGE).startsWith('http') ? image || DEFAULT_IMAGE : `${SITE_URL}${image || DEFAULT_IMAGE}`
+  const structuredData = type === 'article'
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        name: title,
+        description,
+        url,
+        image: absoluteImage,
+        author: { '@type': 'Person', name: site.author, url: SITE_URL },
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: site.author,
+        jobTitle: site.role,
+        url: SITE_URL,
+        sameAs: [site.linkedinUrl, site.githubUrl].map(normalizeExternalUrl).filter(Boolean),
+      }
 
   return (
     <Helmet>
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
+      {noindex && <meta name="robots" content="noindex, nofollow" />}
       <link rel="canonical" href={url} />
 
       <meta property="og:type" content={type} />
@@ -40,6 +62,7 @@ export default function Seo({
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={absoluteImage} />
+      <script type="application/ld+json">{JSON.stringify(structuredData)}</script>
     </Helmet>
   )
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { getFirebaseDb } from '../firebaseClient.js'
+import { fallbackContent } from '../../data/publicFallback.js'
 
 /** Get/set generico per un documento content/{blockId). */
 export function useContentDoc(blockId) {
@@ -13,7 +14,17 @@ export function useContentDoc(blockId) {
     setLoading(true)
     getDoc(doc(getFirebaseDb(), 'content', blockId))
       .then((snapshot) => {
-        if (!cancelled) setData(snapshot.exists() ? snapshot.data() : {})
+        if (!cancelled) {
+          const savedData = snapshot.exists() ? snapshot.data() : {}
+          const fallbackData = fallbackContent[blockId] || {}
+          setData({
+            ...fallbackData,
+            ...savedData,
+            ...(blockId === 'privacy' && (!savedData.sections || savedData.sections.length === 0)
+              ? { sections: fallbackData.sections }
+              : {}),
+          })
+        }
       })
       .catch((err) => {
         if (!cancelled) setError(err.message)

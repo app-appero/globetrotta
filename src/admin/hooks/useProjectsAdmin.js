@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
-import { collection, deleteDoc, doc, getDoc, getDocs, setDoc } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDoc, getDocs, setDoc, updateDoc } from 'firebase/firestore'
 import { getFirebaseDb } from '../firebaseClient.js'
+
+const REMOVED_PROJECT_SLUGS = new Set(['oracle-tennis', 'studio-flow', 'doc-pilot'])
 
 export function useProjectsList() {
   const [projects, setProjects] = useState([])
@@ -9,7 +11,9 @@ export function useProjectsList() {
   const reload = useCallback(async () => {
     setLoading(true)
     const snapshot = await getDocs(collection(getFirebaseDb(), 'projects'))
-    setProjects(snapshot.docs.map((d) => d.data()))
+    setProjects(snapshot.docs
+      .filter((d) => !REMOVED_PROJECT_SLUGS.has(d.data().slug || d.id))
+      .map((d) => d.data()))
     setLoading(false)
   }, [])
 
@@ -31,4 +35,16 @@ export async function saveProject(id, data) {
 
 export async function deleteProject(id) {
   await deleteDoc(doc(getFirebaseDb(), 'projects', id))
+}
+
+export async function publishProject(id) {
+  await updateDoc(doc(getFirebaseDb(), 'projects', id), { status: 'in-development' })
+}
+
+export async function updateProjectStatus(id, status) {
+  await updateDoc(doc(getFirebaseDb(), 'projects', id), { status })
+}
+
+export async function updateProjectOrder(id, order) {
+  await updateDoc(doc(getFirebaseDb(), 'projects', id), { order })
 }

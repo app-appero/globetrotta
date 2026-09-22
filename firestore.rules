@@ -14,8 +14,21 @@ service cloud.firestore {
     }
 
     match /projects/{document} {
-      allow read: if true;
+      allow read: if isAdmin() || resource.data.status != 'draft';
       allow write: if isAdmin();
+    }
+
+    match /contactRequests/{requestId} {
+      allow create: if request.resource.data.keys().hasOnly([
+        'name', 'email', 'company', 'need', 'description', 'privacyAccepted', 'createdAt', 'status'
+      ])
+      && request.resource.data.privacyAccepted == true
+      && request.resource.data.status == 'new'
+      && request.resource.data.name is string
+      && request.resource.data.email is string
+      && request.resource.data.need is string
+      && request.resource.data.description is string;
+      allow read, update, delete: if isAdmin();
     }
 
     match /{document=**} {

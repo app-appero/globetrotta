@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675">
-  <rect width="1200" height="675" fill="#f2f0ec"/>
-  <rect x="0.5" y="0.5" width="1199" height="674" fill="none" stroke="#e7e4dd" stroke-width="1"/>
-  <circle cx="980" cy="220" r="260" fill="#4a4ff2" opacity="0.08"/>
-  <circle cx="1040" cy="480" r="140" fill="#4a4ff2" opacity="0.10"/>
-  <text x="60" y="70" font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.5" fill="#3a3fd6">ANTEPRIMA DA SOSTITUIRE</text>
-  <text x="60" y="380" font-family="Arial, sans-serif" font-size="56" font-weight="800" fill="#17171b">Oracle Tennis</text>
-  <text x="60" y="425" font-family="Arial, sans-serif" font-size="22" fill="#54545e">Dati sportivi, analisi e previsioni con Machine Learning</text>
-</svg>

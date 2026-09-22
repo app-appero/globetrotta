@@ -24,6 +24,7 @@ export default function Projects() {
             eyebrow="Portfolio"
             title="Progetti selezionati"
             description="Cosa fanno questi progetti, per chi, e quale problema risolvono — prima ancora di come sono stati costruiti."
+            as="h1"
           />
         </div>
       </section>
