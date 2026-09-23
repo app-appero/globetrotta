@@ -5,9 +5,9 @@
 //
 // STATIC_PRERENDERED_PATHS serve a src/main.jsx per decidere se hydrateRoot
 // è sicuro per il percorso corrente: include anche /testimonianze, pagina
-// pronta ma non ancora promossa nel sitemap né nella navigazione (vedi
-// src/pages/Testimonials.jsx) — non è comunque una pagina "dinamica" come
-// le schede progetto, quindi va comunque prerenderizzata correttamente.
+// pronta ma non ancora promossa nel sitemap né nella navigazione principale
+// (vedi src/pages/Testimonials.jsx) — non è comunque una pagina "dinamica"
+// come le schede progetto, quindi va comunque prerenderizzata correttamente.
 export const STATIC_PRERENDERED_PATHS = [
   '/', '/progetti', '/soluzioni', '/chi-sono', '/contatti', '/feedback', '/testimonianze', '/privacy',
 ]

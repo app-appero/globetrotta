@@ -7,6 +7,7 @@ const FOOTER_LINKS = [
   { to: '/soluzioni', label: 'Soluzioni' },
   { to: '/chi-sono', label: 'Chi sono' },
   { to: '/contatti', label: 'Contatti' },
+  { to: '/feedback', label: 'Lascia un feedback' },
   { to: '/privacy', label: 'Privacy' },
 ]
 

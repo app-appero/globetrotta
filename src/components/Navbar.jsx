@@ -9,6 +9,7 @@ const NAV_LINKS = [
   { to: '/soluzioni', label: 'Soluzioni' },
   { to: '/chi-sono', label: 'Chi sono' },
   { to: '/contatti', label: 'Contatti' },
+  { to: '/feedback', label: 'Feedback' },
 ]
 
 export default function Navbar() {
