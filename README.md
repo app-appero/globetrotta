@@ -21,8 +21,42 @@ permette di gestire tutti i contenuti senza toccare il codice.
 - [react-helmet-async](https://github.com/staylor/react-helmet-async) per i meta tag SEO/OG per pagina
 
 Il sito pubblico legge i documenti `content/*` e `projects/*` da Firestore tramite il
-client Firebase. Il pannello `/admin` usa inoltre Firebase Auth/Storage, caricati solo
-quando si visita `/admin`.
+client Firebase. La Hero della homepage resta invece quella della build versionata, così
+un documento Firestore precedente non può sostituire il testo già verificato. Il pannello
+`/admin` usa inoltre Firebase Auth/Storage, caricati solo quando si visita `/admin`.
+
+## Design system
+
+I token visivi principali sono centralizzati in `tailwind.config.js` e nelle variabili CSS
+di `src/styles/index.css`. I componenti condivisi usano le classi `btn`, `btn-primary`,
+`btn-secondary`, `btn-on-dark`, `card`, `tag`, `status-badge` e `text-link` per mantenere
+coerenti dimensioni, focus, colori, raggi e stati interattivi. I controlli interattivi
+principali rispettano un'area minima di 44x44 px e le animazioni rispettano
+`prefers-reduced-motion`.
+
+## Privacy e servizi esterni
+
+L’audit del codice attuale non rileva analytics, pixel pubblicitari o cookie di profilazione.
+Il form della pagina Contatti salva le richieste nella collezione privata Firestore
+`contactRequests`; la lettura e la gestione sono riservate all’admin autenticato.
+Google Fonts è caricato dal documento
+HTML; eventuali modifiche a font, video incorporati o servizi esterni vanno rivalutate
+prima del lancio insieme all’informativa privacy. La pagina `/privacy` contiene segnaposto
+espliciti per i dati legali ancora da verificare. La pagina 404 usa `noindex, nofollow`.
+
+## Misurazione e release
+
+Il piano analytics previsto, da attivare solo dopo la scelta di un provider e la verifica
+del consenso applicabile, usa questi eventi senza dati personali: `cta_click`,
+`project_view`, `project_link_click`, `contact_start` e `contact_submit_success`. I
+parametri ammessi sono identificativi tecnici come `project_slug`, `link_type` e
+`cta_location`; il form attuale non invia eventi né dati.
+
+Prima del lancio verificare build, route pubbliche, 404, un solo H1 per pagina, canonical,
+Open Graph, JSON-LD, sitemap, robots, link esterni, immagini, console, tastiera e
+responsive a 360, 390, 768, 1024 e 1440 px. Sono ancora da confermare manualmente dominio
+definitivo, recapiti reali, fotografia, screenshot autentici, almeno due case study
+pubblicabili, privacy policy e configurazione del form.
 
 ## Installazione
 
@@ -77,7 +111,7 @@ npm run preview
    ```
 
 `firebase.json` è già configurato per servire `dist/` come sito statico, con `cleanUrls`
-attivo (così `/progetti/oracle-tennis.html` viene servito come `/progetti/oracle-tennis`) e un
+attivo (così `/progetti/tennis-oracle.html` viene servito come `/progetti/tennis-oracle`) e un
 rewrite di fallback verso `index.html` per eventuali percorsi non pre-renderizzati.
 
 ## Struttura del progetto
@@ -109,9 +143,9 @@ public/
 └── projects/<slug>/          immagini dei singoli progetti
 ```
 
-`src/data` contiene solo il fallback e i dati usati dal prerendering. Nel browser,
-`src/hooks/usePublicContent.jsx` sottoscrive le collezioni Firestore con `onSnapshot`:
-un salvataggio admin è quindi riflesso immediatamente senza build o publish.
+`src/data` contiene il fallback e i dati usati dal prerendering. Nel browser,
+`src/hooks/usePublicContent.jsx` sottoscrive le collezioni Firestore con `onSnapshot`;
+la Hero è esclusa da questo override e richiede una nuova build per essere pubblicata.
 
 ## Come aggiungere un nuovo progetto
 
@@ -123,6 +157,7 @@ sistema è completamente data-driven. Per aggiungere un progetto:
    in `src/types/project.js`. Campi principali:
    - `slug` — deve essere univoco, in kebab-case, determina l'URL `/progetti/<slug>`;
    - `title`, `subtitle`, `shortDescription`, `description`;
+   - `type` — `cliente`, `personale`, `concept` oppure `open source`;
    - `category` — array di stringhe, usato anche per i filtri in `/progetti` (mantieni la
      coerenza con le categorie già usate: "Full Stack", "AI", "Machine Learning", "SaaS",
      "Automation", oppure aggiungine di nuove: i filtri si aggiornano da soli);
@@ -166,14 +201,14 @@ o uno slug duplicato, viene stampato un avviso in console (vedi il controllo in
 Questa prima versione contiene placeholder chiaramente identificabili, da sostituire con i
 tuoi dati reali prima di pubblicare il sito:
 
-- **`src/data/site.js`** — email, URL LinkedIn/GitHub/WhatsApp: sono tutti valori di esempio.
-- **3 progetti in `src/data/projects/`** — Oracle Tennis è basato su un progetto reale
-  (da arricchire con contenuti/immagini vere); StudioFlow e DocPilot sono progetti
-  d'esempio pensati per mostrare la struttura dati e possono essere sostituiti con case study
-  reali o rimossi dall'array in `index.js`.
-- **Immagini progetto** (`public/projects/**/*.svg`) — sono placeholder grafici generati,
-  segnalati con la scritta "Anteprima da sostituire"; vanno sostituiti con screenshot reali
-  (WebP/AVIF consigliati).
+- **`src/data/site.js`** — email e URL LinkedIn/GitHub sono da confermare. Il numero
+  WhatsApp è vuoto finché non viene fornito un numero reale, quindi la card resta nascosta.
+- **`src/data/site.js` → `assets.profilePhoto` e `assets.ogImage`** — configurare i percorsi
+  reali della foto personale e dell'immagine Open Graph PNG/JPG 1200x630 quando disponibili.
+- **7 progetti in `src/data/projects/`** — i case study sono alimentati dai repository
+  verificati, ma cover, screenshot, demo e URL live restano vuoti finché non vengono forniti
+  asset o indirizzi pubblicabili reali. La tipologia (`origin`) e lo stato tecnico (`status`)
+  sono concetti distinti e modificabili dal pannello admin con radio obbligatori.
 - **`public/profile-placeholder.svg`** — sostituire con una foto reale in `src/pages/About.jsx`.
 - **`.firebaserc`** — inserire il project id Firebase reale.
 - **`src/data/site.js` → `url`** e i riferimenti hardcoded in `src/components/Seo.jsx`,
@@ -191,6 +226,8 @@ tuoi dati reali prima di pubblicare il sito:
 Il pannello `/admin` è uno strumento privato, separato dal bundle admin (caricato con
 `React.lazy`), che permette di gestire tutti i contenuti — progetti e testi di ogni
 sezione — da browser, senza toccare il codice. Il pubblico legge Firestore direttamente.
+La scheda **Privacy Policy** consente di aggiornare titolo, introduzione, meta description,
+data di aggiornamento e tutte le sezioni con i relativi paragrafi.
 
 I contenuti modificati dal pannello vivono in **Firestore** (e le immagini in **Firebase
 Storage**) finché non li "pubblichi": solo allora vengono scritti nei file statici che il
@@ -198,11 +235,11 @@ sito realmente serve.
 
 ```
 /admin (login) → modifichi progetti/testi → salvataggio istantaneo su Firestore/Storage
-              → il sito pubblico si aggiorna tramite onSnapshot
+              → il sito pubblico si aggiorna tramite onSnapshot (tranne la Hero)
 ```
 
-`npm run publish` resta disponibile per aggiornare hosting e fallback/prerendering, ma non è
-necessario per rendere visibili le modifiche ai contenuti già presenti in Firestore.
+`npm run publish` aggiorna hosting, regole Firestore e fallback/prerendering. Per modificare la Hero è
+necessario rigenerare e pubblicare la build verificata.
 
 ### Setup iniziale (una tantum)
 

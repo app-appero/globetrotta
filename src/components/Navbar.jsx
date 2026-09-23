@@ -13,6 +13,7 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const { data: site } = useContentBlock('site')
+  const { data: hero } = useContentBlock('hero')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export default function Navbar() {
               to={link.to}
               end={link.to === '/'}
               className={({ isActive }) =>
-                `rounded-full px-4 py-2 text-fluid-sm font-medium transition-colors duration-200 ease-smooth ${
+                `inline-flex min-h-[44px] items-center rounded-full px-4 py-2 text-fluid-sm font-medium transition-colors duration-200 ease-smooth ${
                   isActive ? 'text-accent-600' : 'text-ink-700 hover:text-ink-950'
                 }`
               }
@@ -48,7 +49,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <Link to="/contatti" className="btn-primary hidden md:inline-flex">
-            Parliamo del tuo progetto
+            {hero.ctaPrimaryLabel}
           </Link>
 
           <button

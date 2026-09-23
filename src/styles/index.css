@@ -3,12 +3,160 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --gt-color-ink: #0f0f12;
+    --gt-color-muted: #54545e;
+    --gt-color-paper: #ffffff;
+    --gt-color-surface: #faf9f7;
+    --gt-color-accent: #3a3fd6;
+    --gt-radius-card: 1rem;
+    --gt-radius-pill: 999px;
+    --gt-shadow-card: 0 1px 2px rgba(15, 15, 18, 0.04), 0 8px 24px -12px rgba(15, 15, 18, 0.08);
+    --gt-shadow-card-hover: 0 4px 8px rgba(15, 15, 18, 0.05), 0 16px 32px -12px rgba(15, 15, 18, 0.12);
+    --gt-focus-ring: 2px solid #4a4ff2;
+  }
+
   html {
     scroll-behavior: smooth;
   }
 
   body {
     @apply bg-paper-50 text-ink-900 font-sans antialiased;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  html[data-theme='dark'] {
+    color-scheme: dark;
+    --gt-color-ink: #f5f5f7;
+    --gt-color-muted: #b7b7c2;
+    --gt-color-paper: #111216;
+    --gt-color-surface: #191a20;
+    --gt-color-accent: #8f96ff;
+    --gt-focus-ring: 2px solid #aeb6ff;
+  }
+
+  html[data-theme='dark'] body {
+    @apply bg-ink-950 text-paper-50;
+  }
+
+  html[data-theme='dark'] .bg-paper-50 {
+    background-color: #17171b !important;
+  }
+
+  html[data-theme='dark'] .bg-paper-50\/90,
+  html[data-theme='dark'] .bg-paper-50\/80,
+  html[data-theme='dark'] .bg-paper-50\/95 {
+    background-color: rgb(23 23 27 / 0.92) !important;
+  }
+
+  html[data-theme='dark'] .bg-paper-100 {
+    background-color: #202026 !important;
+  }
+
+  html[data-theme='dark'] .bg-paper-200 {
+    background-color: #2b2b33 !important;
+  }
+
+  html[data-theme='dark'] .bg-paper-300 {
+    background-color: #3a3a42 !important;
+  }
+
+  html[data-theme='dark'] .bg-ink-950 {
+    background-color: #0d0e12 !important;
+  }
+
+  html[data-theme='dark'] .bg-ink-950\/5,
+  html[data-theme='dark'] .bg-ink-950\/\[0\.03\],
+  html[data-theme='dark'] .bg-ink-950\/\[0\.04\] {
+    background-color: rgb(255 255 255 / 0.08) !important;
+  }
+
+  html[data-theme='dark'] .text-paper-50 {
+    color: #f5f5f7 !important;
+  }
+
+  html[data-theme='dark'] .text-accent-600,
+  html[data-theme='dark'] .text-accent-700 {
+    color: #aeb6ff !important;
+  }
+
+  html[data-theme='dark'] .text-accent-900 {
+    color: #e3e5ff !important;
+  }
+
+  html[data-theme='dark'] .text-red-600 {
+    color: #ff9eaa !important;
+  }
+
+  html[data-theme='dark'] .bg-accent-50 {
+    background-color: #252744 !important;
+  }
+
+  html[data-theme='dark'] .bg-accent-100 {
+    background-color: #343866 !important;
+  }
+
+  html[data-theme='dark'] .border-ink-800\/20,
+  html[data-theme='dark'] .border-ink-800\/30,
+  html[data-theme='dark'] .border-ink-800\/40 {
+    border-color: rgb(255 255 255 / 0.2) !important;
+  }
+
+  html[data-theme='dark'] .border-paper-50\/25,
+  html[data-theme='dark'] .border-paper-50\/60 {
+    border-color: rgb(255 255 255 / 0.3) !important;
+  }
+
+  html[data-theme='dark'] input,
+  html[data-theme='dark'] select,
+  html[data-theme='dark'] textarea {
+    background-color: #202127 !important;
+    border-color: rgb(255 255 255 / 0.22) !important;
+    color: #f5f5f7 !important;
+  }
+
+  html[data-theme='dark'] input::placeholder,
+  html[data-theme='dark'] textarea::placeholder {
+    color: #9b9ba8 !important;
+  }
+
+  html[data-theme='dark'] option {
+    background-color: #202127;
+    color: #f5f5f7;
+  }
+
+  html[data-theme='dark'] .status-badge {
+    background-color: rgb(143 150 255 / 0.15);
+    border-color: rgb(174 182 255 / 0.35);
+    color: #c7cbff;
+  }
+
+  html[data-theme='dark'] .tag {
+    background-color: rgb(255 255 255 / 0.1);
+    color: #d4d4dc;
+  }
+
+  html[data-theme='dark'] .text-ink-950,
+  html[data-theme='dark'] .text-ink-900,
+  html[data-theme='dark'] .text-ink-800,
+  html[data-theme='dark'] .text-ink-700 {
+    color: #f7f7f5 !important;
+  }
+
+  html[data-theme='dark'] .text-ink-600,
+  html[data-theme='dark'] .text-ink-500,
+  html[data-theme='dark'] .text-ink-400 {
+    color: #c7c7cf !important;
+  }
+
+  html[data-theme='dark'] .border-ink-800\/10,
+  html[data-theme='dark'] .border-ink-800\/15 {
+    border-color: rgb(255 255 255 / 0.16) !important;
+  }
+
+  html[data-theme='dark'] .shadow-card,
+  html[data-theme='dark'] .shadow-card-hover {
+    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.6) !important;
   }
 
   ::selection {
@@ -16,8 +164,14 @@
   }
 
   :focus-visible {
-    outline: 2px solid theme('colors.accent.500');
+    outline: var(--gt-focus-ring);
     outline-offset: 2px;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply focus:border-accent-500 focus:outline-none focus:ring-2 focus:ring-accent-500/25;
   }
 }
 
@@ -27,15 +181,108 @@
   }
 
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-fluid-sm font-medium transition-all duration-200 ease-smooth min-h-[44px];
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 rounded-full px-6 py-3 text-fluid-sm font-medium transition-all duration-200 ease-smooth disabled:pointer-events-none disabled:opacity-60;
   }
 
+  /*
+   * .btn-primary usa colori letterali (non @apply bg-ink-950/text-paper-50)
+   * di proposito: nel tema scuro il pulsante deve avere uno sfondo diverso
+   * da quello della pagina (che è anch'esso derivato da ink-950), altrimenti
+   * il pulsante sparisce contro lo sfondo. Definire qui il valore scuro,
+   * invece di affidarsi all'override generico di bg-ink-950, evita che i due
+   * finiscano per coincidere.
+   */
   .btn-primary {
-    @apply btn bg-ink-950 text-paper-50 hover:bg-accent-600 active:bg-accent-700;
+    @apply btn;
+    background-color: #0f0f12;
+    color: #ffffff;
+    border: 1px solid transparent;
+  }
+
+  .btn-primary:hover {
+    background-color: #3a3fd6;
+  }
+
+  .btn-primary:active {
+    background-color: #2f33ac;
+  }
+
+  html[data-theme='dark'] .btn-primary {
+    background-color: #202127;
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  html[data-theme='dark'] .btn-primary:hover {
+    border-color: rgba(255, 255, 255, 0.55);
   }
 
   .btn-secondary {
     @apply btn border border-ink-800/15 text-ink-900 hover:border-ink-800/40 hover:bg-ink-950/[0.03];
+  }
+
+  html[data-theme='dark'] .btn-secondary {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  html[data-theme='dark'] .btn-secondary:hover {
+    border-color: rgba(255, 255, 255, 0.55);
+    background-color: rgba(255, 255, 255, 0.06);
+  }
+
+  .btn-on-dark {
+    @apply btn border border-paper-50/25 text-paper-50 hover:border-paper-50/60;
+  }
+
+  /*
+   * .btn-invert: pulsante chiaro pensato per sezioni SEMPRE scure (CTA finale,
+   * lightbox della galleria) indipendentemente dal tema del sito. Colori
+   * letterali per non farlo reinvertire dall'override generico di
+   * bg-paper-50/text-ink-950 quando il sito è in tema scuro.
+   */
+  .btn-invert {
+    background-color: #ffffff;
+    color: #0f0f12;
+  }
+
+  .btn-invert:hover {
+    background-color: #4a4ff2;
+    color: #ffffff;
+  }
+
+  /*
+   * .btn-ink: stessa superficie "piena scura" di .btn-primary, ma senza le
+   * dimensioni di .btn — per elementi come il filtro attivo dei progetti o
+   * lo skip-link, che hanno un padding proprio più compatto.
+   */
+  .btn-ink {
+    background-color: #0f0f12;
+    color: #ffffff;
+  }
+
+  html[data-theme='dark'] .btn-ink {
+    background-color: #202127;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  html[data-theme='dark'] .btn-ink:hover {
+    background-color: #2a2b33;
+    border-color: rgba(255, 255, 255, 0.55);
+  }
+
+  .card {
+    @apply rounded-2xl border border-ink-800/10 bg-paper-50 shadow-card transition-shadow duration-200 ease-smooth hover:shadow-card-hover;
+  }
+
+  .tag {
+    @apply rounded-full bg-ink-950/[0.04] px-3 py-1.5 text-fluid-xs font-medium text-ink-700;
+  }
+
+  .status-badge {
+    @apply rounded-full border border-accent-600/20 bg-accent-600/[0.06] px-3 py-1 text-fluid-xs font-medium text-accent-700;
+  }
+
+  .text-link {
+    @apply font-medium text-ink-900 underline decoration-ink-800/20 underline-offset-4 transition-colors duration-200 ease-smooth hover:text-accent-600 hover:decoration-accent-500;
   }
 
   .eyebrow {

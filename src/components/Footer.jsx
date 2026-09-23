@@ -7,6 +7,7 @@ const FOOTER_LINKS = [
   { to: '/soluzioni', label: 'Soluzioni' },
   { to: '/chi-sono', label: 'Chi sono' },
   { to: '/contatti', label: 'Contatti' },
+  { to: '/privacy', label: 'Privacy' },
 ]
 
 export default function Footer() {
@@ -41,7 +42,7 @@ export default function Footer() {
       <div className="border-t border-ink-800/10">
         <div className="container-page py-5">
           <p className="text-fluid-xs text-ink-500">
-            © {new Date().getFullYear()} {site.name} — {site.author}. Tutti i diritti riservati.
+            © {site.copyrightYear || '2026'} {site.name} — {site.author}. Tutti i diritti riservati.
           </p>
         </div>
       </div>

@@ -14,8 +14,94 @@ service cloud.firestore {
     }
 
     match /projects/{document} {
-      allow read: if true;
+      allow read: if isAdmin() || resource.data.status != 'draft';
       allow write: if isAdmin();
+    }
+
+    match /contactRequests/{requestId} {
+      allow create: if request.resource.data.keys().hasOnly([
+        'name', 'email', 'company', 'need', 'description', 'privacyAccepted', 'createdAt', 'status'
+      ])
+      && request.resource.data.privacyAccepted == true
+      && request.resource.data.status == 'new'
+      && request.resource.data.name is string
+      && request.resource.data.email is string
+      && request.resource.data.need is string
+      && request.resource.data.description is string;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Testimonianze: chiunque può inviare un feedback (stato forzato a
+    // "pending", niente evidenza/ordine/pubblicazione impostabili dal
+    // pubblico), ma solo l'admin può leggere l'intera collezione o
+    // modificare/eliminare un documento. Il sito pubblico può leggere solo
+    // le testimonianze già approvate (una query senza il filtro
+    // status == 'approved' viene respinta da Firestore perché non può
+    // dimostrare che ogni documento restituito rispetti la regola).
+    match /testimonials/{testimonialId} {
+      allow read: if isAdmin() || resource.data.status == 'approved';
+
+      allow create: if isAdmin() || (
+        request.resource.data.keys().hasOnly([
+          'clientName', 'clientRole', 'companyName', 'companyWebsite',
+          'projectId', 'projectName', 'testimonialText', 'concreteResult',
+          'rating', 'consentToPublish', 'showIdentity', 'showOnProject',
+          'status', 'featured', 'displayOrder', 'createdAt', 'updatedAt',
+          'publishedAt', 'source', 'invitationToken', 'invitationUsed'
+        ])
+        && request.resource.data.keys().hasAll([
+          'clientName', 'testimonialText', 'consentToPublish', 'showIdentity',
+          'showOnProject', 'status', 'featured', 'displayOrder', 'createdAt',
+          'updatedAt', 'publishedAt', 'source', 'invitationUsed'
+        ])
+        // Nessuna pubblicazione o evidenza può essere auto-assegnata dal form pubblico.
+        && request.resource.data.status == 'pending'
+        && request.resource.data.featured == false
+        && request.resource.data.displayOrder == 0
+        && request.resource.data.publishedAt == null
+        && request.resource.data.source == 'feedback-form'
+        && request.resource.data.consentToPublish == true
+        && request.resource.data.createdAt == request.time
+        && request.resource.data.updatedAt == request.time
+        // Validazione tipo/lunghezza dei campi.
+        && request.resource.data.clientName is string
+        && request.resource.data.clientName.size() > 0 && request.resource.data.clientName.size() < 120
+        && request.resource.data.testimonialText is string
+        && request.resource.data.testimonialText.size() >= 10 && request.resource.data.testimonialText.size() < 4000
+        && request.resource.data.showIdentity is bool
+        && request.resource.data.showOnProject is bool
+        && request.resource.data.invitationUsed is bool
+        && (!('clientRole' in request.resource.data) || (request.resource.data.clientRole is string && request.resource.data.clientRole.size() < 120))
+        && (!('companyName' in request.resource.data) || (request.resource.data.companyName is string && request.resource.data.companyName.size() < 160))
+        && (!('companyWebsite' in request.resource.data) || (request.resource.data.companyWebsite is string && request.resource.data.companyWebsite.size() < 300))
+        && (!('projectId' in request.resource.data) || (request.resource.data.projectId is string && request.resource.data.projectId.size() < 200))
+        && (!('projectName' in request.resource.data) || (request.resource.data.projectName is string && request.resource.data.projectName.size() < 200))
+        && (!('concreteResult' in request.resource.data) || (request.resource.data.concreteResult is string && request.resource.data.concreteResult.size() < 500))
+        && (!('rating' in request.resource.data) || (request.resource.data.rating is int && request.resource.data.rating >= 1 && request.resource.data.rating <= 5))
+        && (!('invitationToken' in request.resource.data) || (request.resource.data.invitationToken is string && request.resource.data.invitationToken.size() < 200))
+      );
+
+      allow update, delete: if isAdmin();
+    }
+
+    // Inviti personali per la raccolta testimonianze: il documento è
+    // indicizzato dal token stesso, quindi leggerlo richiede di conoscere
+    // già il link — non è enumerabile (list è riservata all'admin). Il
+    // pubblico può solo marcare l'invito come "usato" una volta, mai il
+    // contrario, e non può toccare altri campi.
+    match /testimonialInvitations/{token} {
+      allow get: if true;
+      allow list: if isAdmin();
+      allow create, delete: if isAdmin();
+
+      allow update: if isAdmin() || (
+        resource.data.active != false
+        && resource.data.used == false
+        && (!('expiresAt' in resource.data) || resource.data.expiresAt == null || resource.data.expiresAt > request.time)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used', 'usedAt'])
+        && request.resource.data.used == true
+        && request.resource.data.usedAt == request.time
+      );
     }
 
     match /{document=**} {

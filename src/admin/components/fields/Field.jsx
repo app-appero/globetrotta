@@ -5,6 +5,9 @@ import ObjectListField from './ObjectListField.jsx'
 import ObjectField from './ObjectField.jsx'
 import ImageField from './ImageField.jsx'
 import BooleanField from './BooleanField.jsx'
+import RadioField from './RadioField.jsx'
+import NumberField from './NumberField.jsx'
+import GalleryField from './GalleryField.jsx'
 
 /**
  * Dispatcher generico: dato uno schema di campo { type, ... } renderizza il
@@ -27,6 +30,12 @@ export default function Field({ field, value, onChange }) {
       return <ImageField value={value ?? ''} onChange={onChange} uploadPath={field.uploadPath} />
     case 'boolean':
       return <BooleanField value={Boolean(value)} onChange={onChange} label={field.checkboxLabel} />
+    case 'radio':
+      return <RadioField value={value} onChange={onChange} options={field.options} name={field.key} label={field.label} required={field.required} />
+    case 'number':
+      return <NumberField value={value} onChange={onChange} />
+    case 'gallery':
+      return <GalleryField value={value} onChange={onChange} uploadPath={field.uploadPath} />
     case 'text':
     default:
       return <TextField value={value ?? ''} onChange={onChange} readOnly={field.readOnly} />

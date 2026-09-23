@@ -16,7 +16,7 @@ import techStack from '../src/data/techStack.js'
 import about from '../src/data/about.js'
 import finalCta from '../src/data/finalCta.js'
 import contact from '../src/data/contact.js'
-import { getAllProjects } from '../src/data/projects/index.js'
+import privacy from '../src/data/privacy.js'
 
 const ARRAY_WRAPPED_BLOCKS = new Set(['solutions', 'process'])
 
@@ -32,6 +32,7 @@ const CONTENT_BLOCKS = {
   about,
   finalCta,
   contact,
+  privacy,
 }
 
 const db = getAdminDb()
@@ -42,9 +43,9 @@ for (const [blockId, value] of Object.entries(CONTENT_BLOCKS)) {
   console.log(`[seed-content] content/${blockId} scritto.`)
 }
 
-for (const project of getAllProjects()) {
-  await db.collection('projects').doc(project.slug).set(project)
-  console.log(`[seed-content] projects/${project.slug} scritto.`)
+for (const legacySlug of ['oracle-tennis', 'studio-flow', 'doc-pilot']) {
+  await db.collection('projects').doc(legacySlug).delete()
+  console.log(`[seed-content] projects/${legacySlug} rimosso se presente.`)
 }
 
 console.log('\n[seed-content] Fatto. Apri /admin (npm run dev) per vedere i contenuti già popolati.')

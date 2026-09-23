@@ -1,22 +1,47 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { collection, onSnapshot } from 'firebase/firestore'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { collection, onSnapshot, query, where } from 'firebase/firestore'
 import { getFirebaseDb } from '../firebaseClient.js'
-import { fallbackContent, fallbackProjects } from '../data/publicFallback.js'
+import { fallbackContent } from '../data/publicFallback.js'
+import { sortProjects } from '../utils/projectPresentation.js'
+import { sortTestimonials } from '../utils/testimonials.js'
 
 const PublicContentContext = createContext(null)
+const REMOVED_PROJECT_SLUGS = new Set(['oracle-tennis', 'studio-flow', 'doc-pilot'])
+
+function isPublicProject(project) {
+  return project.status !== 'draft'
+}
 
 export function PublicContentProvider({ children }) {
   const [content, setContent] = useState(fallbackContent)
-  const [projects, setProjects] = useState(fallbackProjects)
+  const [projects, setProjects] = useState([])
+  const [testimonials, setTestimonials] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [retryToken, setRetryToken] = useState(0)
+
+  const retry = useCallback(() => {
+    setError('')
+    setLoading(true)
+    setRetryToken((token) => token + 1)
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = content.site?.theme === 'dark' ? 'dark' : 'light'
+  }, [content.site?.theme])
 
   useEffect(() => {
     let contentReady = false
     let projectsReady = false
+    let testimonialsReady = false
     let active = true
     let unsubscribeContent
     let unsubscribeProjects
+    let unsubscribeTestimonials
+
+    function maybeStopLoading() {
+      if (contentReady && projectsReady && testimonialsReady) setLoading(false)
+    }
 
     try {
       const db = getFirebaseDb()
@@ -24,27 +49,52 @@ export function PublicContentProvider({ children }) {
         if (!active) return
         const next = { ...fallbackContent }
         snapshot.docs.forEach((document) => {
+          // La Hero pubblicata deriva dai file versionati e dalla build verificata.
+          // Evita che un documento Firestore precedente reintroduca testi diversi
+          // dopo l'hydration.
+          if (document.id === 'hero') return
           next[document.id] = document.data()
         })
         setContent(next)
         contentReady = true
-        if (projectsReady) setLoading(false)
+        maybeStopLoading()
       }, (snapshotError) => {
         if (!active) return
         setError(snapshotError.message)
         contentReady = true
-        if (projectsReady) setLoading(false)
+        maybeStopLoading()
       })
-      unsubscribeProjects = onSnapshot(collection(db, 'projects'), (snapshot) => {
+      unsubscribeProjects = onSnapshot(query(collection(db, 'projects'), where('status', '!=', 'draft')), (snapshot) => {
         if (!active) return
-        setProjects(snapshot.docs.map((document) => ({ id: document.id, ...document.data() })))
+        const firestoreProjects = snapshot.docs.filter((document) => {
+          const data = document.data()
+          return !REMOVED_PROJECT_SLUGS.has(data.slug || document.id)
+        }).map((document) => {
+          const data = document.data()
+          return { ...data, id: document.id }
+        })
+        setProjects(sortProjects(firestoreProjects.filter(isPublicProject)))
         projectsReady = true
-        if (contentReady) setLoading(false)
+        maybeStopLoading()
       }, (snapshotError) => {
         if (!active) return
         setError(snapshotError.message)
         projectsReady = true
-        if (contentReady) setLoading(false)
+        maybeStopLoading()
+      })
+      // Il sito pubblico può leggere solo le testimonianze approvate (vedi
+      // firestore.rules): questo filtro non è un'ottimizzazione, è l'unica
+      // query che le regole di sicurezza permettono a un visitatore anonimo.
+      unsubscribeTestimonials = onSnapshot(query(collection(db, 'testimonials'), where('status', '==', 'approved')), (snapshot) => {
+        if (!active) return
+        setTestimonials(sortTestimonials(snapshot.docs.map((document) => ({ ...document.data(), id: document.id }))))
+        testimonialsReady = true
+        maybeStopLoading()
+      }, (snapshotError) => {
+        if (!active) return
+        setError(snapshotError.message)
+        testimonialsReady = true
+        maybeStopLoading()
       })
     } catch (initializationError) {
       setError(initializationError.message)
@@ -55,10 +105,14 @@ export function PublicContentProvider({ children }) {
       active = false
       unsubscribeContent?.()
       unsubscribeProjects?.()
+      unsubscribeTestimonials?.()
     }
-  }, [])
+  }, [retryToken])
 
-  const value = useMemo(() => ({ content, projects, loading, error }), [content, projects, loading, error])
+  const value = useMemo(
+    () => ({ content, projects, testimonials, loading, error, retry }),
+    [content, projects, testimonials, loading, error, retry],
+  )
   return <PublicContentContext.Provider value={value}>{children}</PublicContentContext.Provider>
 }
 

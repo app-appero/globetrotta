@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { getFirebaseStorage } from '../../firebaseClient.js'
 
-export default function ImageField({ value, onChange, uploadPath = 'uploads' }) {
+export default function ImageField({ id, value, onChange, uploadPath = 'uploads' }) {
   const inputRef = useRef(null)
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
@@ -31,6 +31,7 @@ export default function ImageField({ value, onChange, uploadPath = 'uploads' }) 
       {value && <img src={value} alt="" className="mb-3 h-32 w-32 rounded-xl border border-ink-800/10 object-cover" />}
       <div className="flex items-center gap-3">
         <input
+          id={id}
           type="text"
           value={value ?? ''}
           onChange={(e) => onChange(e.target.value)}
