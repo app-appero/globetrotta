@@ -2,8 +2,10 @@ import { useParams, Link, Navigate } from 'react-router-dom'
 import Seo from '../components/Seo.jsx'
 import ProjectGallery from '../components/ProjectGallery.jsx'
 import ProjectGrid from '../components/ProjectGrid.jsx'
+import TestimonialCard from '../components/TestimonialCard.jsx'
 import { usePublicContent } from '../hooks/usePublicContent.jsx'
 import { getProjectOriginLabel, getProjectStatusLabel } from '../utils/projectPresentation.js'
+import { isProjectTestimonial } from '../utils/testimonials.js'
 
 // Etichette delle sezioni della scheda progetto, centralizzate qui in modo
 // che tutti i progetti (guidati dagli stessi dati) mostrino sempre lo stesso
@@ -81,7 +83,7 @@ function ProjectDetailStatus({ eyebrow, title, description, action }) {
 
 export default function ProjectDetail() {
   const { slug } = useParams()
-  const { projects, loading, error, retry } = usePublicContent()
+  const { projects, testimonials, loading, error, retry } = usePublicContent()
   const project = projects.find((item) => item.slug === slug)
   const status = getProjectDetailStatus({ loading, error, project })
 
@@ -121,6 +123,7 @@ export default function ProjectDetail() {
   const relatedProjects = projects
     .filter((item) => item.slug !== project.slug && item.category.some((category) => project.category.includes(category)))
     .slice(0, 2)
+  const projectTestimonials = testimonials.filter((testimonial) => isProjectTestimonial(testimonial, project.id))
 
   return (
     <>
@@ -253,6 +256,19 @@ export default function ProjectDetail() {
             </section>
           )}
         </div>
+
+        {projectTestimonials.length > 0 && (
+          <section className="border-t border-ink-800/10 py-10 sm:py-12">
+            <div className="container-page">
+              <h2 className="text-fluid-xl font-bold text-ink-950">Il feedback del cliente</h2>
+              <div className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {projectTestimonials.map((testimonial) => (
+                  <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {relatedProjects.length > 0 && (
           <section className="border-t border-ink-800/10 bg-paper-100 py-16 sm:py-20">

@@ -3,6 +3,7 @@ import Hero from '../sections/Hero.jsx'
 import ProblemsSection from '../sections/ProblemsSection.jsx'
 import SolutionsSection from '../sections/SolutionsSection.jsx'
 import FeaturedProjectsSection from '../sections/FeaturedProjectsSection.jsx'
+import TestimonialsSection from '../sections/TestimonialsSection.jsx'
 import ProcessSection from '../sections/ProcessSection.jsx'
 import TechStackSection from '../sections/TechStackSection.jsx'
 import FinalCtaSection from '../sections/FinalCtaSection.jsx'
@@ -18,6 +19,7 @@ export default function Home() {
       <Hero />
       <ProblemsSection />
       <FeaturedProjectsSection />
+      <TestimonialsSection />
       <SolutionsSection />
       <ProcessSection />
       <TechStackSection />

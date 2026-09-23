@@ -1,7 +1,12 @@
 import { Helmet } from 'react-helmet-async'
 import { useContentBlock } from '../hooks/usePublicContent.jsx'
-import { SITE_URL as CONFIGURED_SITE_URL } from '../data/site.js'
 import { normalizeExternalUrl } from '../utils/externalUrl.js'
+
+// Fallback letterale, non importato da src/data/site.js: quel file viene
+// rigenerato interamente da `npm run sync-content` a partire da Firestore
+// (vedi scripts/sync-content.mjs), che scrive solo `export default data` —
+// un named export aggiunto qui a mano sparirebbe al prossimo sync.
+const CONFIGURED_SITE_URL = 'https://globetrotta.com'
 
 /**
  * Imposta title, meta description, canonical e Open Graph/Twitter card

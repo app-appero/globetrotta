@@ -93,6 +93,6 @@ export const PROJECT_SCHEMA = [
   { key: 'githubUrl', label: 'GitHub URL (opzionale)', type: 'text' },
   { key: 'liveUrl', label: 'Live URL (opzionale)', type: 'text' },
   { key: 'demoVideoUrl', label: 'Video demo URL (opzionale, YouTube/Vimeo)', type: 'text' },
-  { key: 'seoTitle', label: 'SEO Title', type: 'text' },
-  { key: 'seoDescription', label: 'SEO Description', type: 'textarea' },
+  { key: 'seoTitle', label: 'Titolo SEO', type: 'text' },
+  { key: 'seoDescription', label: 'Descrizione SEO', type: 'textarea' },
 ]

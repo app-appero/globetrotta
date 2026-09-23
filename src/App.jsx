@@ -6,6 +6,8 @@ import ProjectDetail from './pages/ProjectDetail.jsx'
 import Solutions from './pages/Solutions.jsx'
 import About from './pages/About.jsx'
 import Contact from './pages/Contact.jsx'
+import Feedback from './pages/Feedback.jsx'
+import Testimonials from './pages/Testimonials.jsx'
 import Privacy from './pages/Privacy.jsx'
 import NotFound from './pages/NotFound.jsx'
 import RouteErrorBoundary from './components/RouteErrorBoundary.jsx'
@@ -34,6 +36,8 @@ export const routes = [
       { path: 'soluzioni', element: <Solutions /> },
       { path: 'chi-sono', element: <About /> },
       { path: 'contatti', element: <Contact /> },
+      { path: 'feedback', element: <Feedback /> },
+      { path: 'testimonianze', element: <Testimonials /> },
       { path: 'privacy', element: <Privacy /> },
       { path: '*', element: <NotFound /> },
     ],
