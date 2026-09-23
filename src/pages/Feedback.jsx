@@ -6,12 +6,7 @@ import SectionHeading from '../components/SectionHeading.jsx'
 import TestimonialCard from '../components/TestimonialCard.jsx'
 import { usePublicContent } from '../hooks/usePublicContent.jsx'
 import { getFirebaseDb } from '../firebaseClient.js'
-import { isFeaturedTestimonial, sortTestimonials } from '../utils/testimonials.js'
-
-// Le stesse testimonianze in evidenza mostrate in Home: vederle qui, accanto
-// al form, dà fiducia a chi sta per scrivere la propria. Limitate a 3 per non
-// allungare la pagina oltre il form stesso.
-const SIDEBAR_TESTIMONIALS_LIMIT = 3
+import { isApprovedTestimonial, sortTestimonials } from '../utils/testimonials.js'
 
 const RATING_OPTIONS = [5, 4, 3, 2, 1]
 
@@ -28,10 +23,10 @@ export default function Feedback() {
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') || ''
   const { projects, testimonials } = usePublicContent()
-  const sidebarTestimonials = sortTestimonials(testimonials.filter(isFeaturedTestimonial)).slice(
-    0,
-    SIDEBAR_TESTIMONIALS_LIMIT,
-  )
+  // Qui mostriamo tutte le testimonianze approvate, non solo quelle "in
+  // evidenza in Home": quel flag sceglie cosa mettere in Home, non se un
+  // feedback approvato è visibile qui.
+  const sidebarTestimonials = sortTestimonials(testimonials.filter(isApprovedTestimonial))
 
   const [invitation, setInvitation] = useState(null)
   const [invitationState, setInvitationState] = useState(token ? 'loading' : 'none')
