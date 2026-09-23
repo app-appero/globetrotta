@@ -3,12 +3,12 @@ import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
 import site from '../src/data/site.js'
+import { STATIC_PRERENDERED_PATHS } from '../src/data/staticRoutes.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const distDir = resolve(__dirname, '../dist')
 
-const staticPaths = ['/', '/progetti', '/soluzioni', '/chi-sono', '/contatti', '/privacy']
-const paths = staticPaths
+const paths = STATIC_PRERENDERED_PATHS
 
 const urlEntries = paths
   .map((path) => {

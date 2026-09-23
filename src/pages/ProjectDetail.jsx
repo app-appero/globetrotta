@@ -5,6 +5,37 @@ import ProjectGrid from '../components/ProjectGrid.jsx'
 import { usePublicContent } from '../hooks/usePublicContent.jsx'
 import { getProjectOriginLabel, getProjectStatusLabel } from '../utils/projectPresentation.js'
 
+// Etichette delle sezioni della scheda progetto, centralizzate qui in modo
+// che tutti i progetti (guidati dagli stessi dati) mostrino sempre lo stesso
+// testo in italiano, senza doverlo ripetere ad ogni <DetailSection>.
+const SECTION_LABELS = {
+  overview: 'Panoramica',
+  problem: 'Il problema',
+  context: 'Contesto',
+  solution: 'La soluzione',
+  myRole: 'Il mio ruolo',
+  keyFeatures: 'Funzionalità principali',
+  businessValue: 'Valore generato',
+  architecture: 'Architettura tecnica',
+  challenges: 'Sfide affrontate',
+  results: 'Risultato',
+  techStack: 'Tecnologie utilizzate',
+  skills: 'Cosa dimostra questo progetto',
+  gallery: 'Galleria',
+  relatedProjects: 'Progetti correlati',
+}
+
+// Stato "visibile" della pagina, derivato da usePublicContent(). "idle" non
+// si verifica mai in pratica in questa architettura (la sottoscrizione a
+// Firestore parte subito, in modo sincrono, all'interno del provider), ma è
+// elencato per chiarezza sugli stati gestiti.
+function getProjectDetailStatus({ loading, error, project }) {
+  if (loading) return 'loading'
+  if (project) return 'success'
+  if (error) return 'error'
+  return 'not-found'
+}
+
 function isPlaceholderImage(src) {
   return !src || (src.startsWith('/projects/') && src.endsWith('.svg'))
 }
@@ -52,12 +83,13 @@ export default function ProjectDetail() {
   const { slug } = useParams()
   const { projects, loading, error, retry } = usePublicContent()
   const project = projects.find((item) => item.slug === slug)
+  const status = getProjectDetailStatus({ loading, error, project })
 
   // Al primo caricamento (URL diretto, refresh, nuova scheda) Firestore non ha
   // ancora risposto: "projects" è ancora vuoto qui. Senza questo controllo il
   // progetto risulterebbe erroneamente "non esistente" e si finirebbe
   // rimandati a /progetti prima ancora che i dati arrivino.
-  if (loading) {
+  if (status === 'loading') {
     return (
       <ProjectDetailStatus
         eyebrow="Caricamento"
@@ -67,7 +99,7 @@ export default function ProjectDetail() {
     )
   }
 
-  if (!project && error) {
+  if (status === 'error') {
     return (
       <ProjectDetailStatus
         eyebrow="Errore"
@@ -82,7 +114,7 @@ export default function ProjectDetail() {
     )
   }
 
-  if (!project) {
+  if (status === 'not-found') {
     return <Navigate to="/progetti" replace />
   }
 
@@ -150,53 +182,53 @@ export default function ProjectDetail() {
         </header>
 
         <div className="container-page">
-          <DetailSection title="Overview">
+          <DetailSection title={SECTION_LABELS.overview}>
             <p>{project.description}</p>
           </DetailSection>
 
-          <DetailSection title="Il problema">
+          <DetailSection title={SECTION_LABELS.problem}>
             <p>{project.problem}</p>
           </DetailSection>
 
           {project.context && (
-            <DetailSection title="Contesto">
+            <DetailSection title={SECTION_LABELS.context}>
               <p>{project.context}</p>
             </DetailSection>
           )}
 
-          <DetailSection title="La soluzione">
+          <DetailSection title={SECTION_LABELS.solution}>
             <p>{project.solution}</p>
           </DetailSection>
 
-          <DetailSection title="Il mio ruolo">
+          <DetailSection title={SECTION_LABELS.myRole}>
             <p>{project.myRole}</p>
           </DetailSection>
 
-          <DetailSection title="Funzionalità principali">
+          <DetailSection title={SECTION_LABELS.keyFeatures}>
             <DetailList items={project.keyFeatures} />
           </DetailSection>
 
-          <DetailSection title="Business value">
+          <DetailSection title={SECTION_LABELS.businessValue}>
             <DetailList items={project.businessValue} />
           </DetailSection>
 
           {project.architecture && (
-            <DetailSection title="Architettura tecnica">
+            <DetailSection title={SECTION_LABELS.architecture}>
               <p>{project.architecture}</p>
             </DetailSection>
           )}
 
           {project.challenges?.length > 0 && (
-            <DetailSection title="Challenges">
+            <DetailSection title={SECTION_LABELS.challenges}>
               <DetailList items={project.challenges} />
             </DetailSection>
           )}
 
-          <DetailSection title="Risultato">
+          <DetailSection title={SECTION_LABELS.results}>
             <DetailList items={project.results} />
           </DetailSection>
 
-          <DetailSection title="Tech stack">
+          <DetailSection title={SECTION_LABELS.techStack}>
             <div className="flex flex-wrap gap-2">
               {project.technologies.map((tech) => (
                 <span key={tech} className="rounded-full border border-ink-800/10 px-3 py-1.5 text-fluid-sm text-ink-800">
@@ -207,14 +239,14 @@ export default function ProjectDetail() {
           </DetailSection>
 
           {project.skills?.length > 0 && (
-            <DetailSection title="Cosa dimostra questo progetto">
+            <DetailSection title={SECTION_LABELS.skills}>
               <DetailList items={project.skills} />
             </DetailSection>
           )}
 
           {(hasAvailableGallery(project) || project.demoVideoUrl) && (
             <section className="border-t border-ink-800/10 py-10 sm:py-12">
-              <h2 className="text-fluid-xl font-bold text-ink-950">Galleria</h2>
+              <h2 className="text-fluid-xl font-bold text-ink-950">{SECTION_LABELS.gallery}</h2>
               <div className="mt-6">
                 <ProjectGallery gallery={project.gallery} demoVideoUrl={project.demoVideoUrl} />
               </div>
@@ -225,7 +257,7 @@ export default function ProjectDetail() {
         {relatedProjects.length > 0 && (
           <section className="border-t border-ink-800/10 bg-paper-100 py-16 sm:py-20">
             <div className="container-page">
-              <h2 className="text-fluid-2xl font-bold text-ink-950">Progetti correlati</h2>
+              <h2 className="text-fluid-2xl font-bold text-ink-950">{SECTION_LABELS.relatedProjects}</h2>
               <div className="mt-8">
                 <ProjectGrid projects={relatedProjects} />
               </div>
