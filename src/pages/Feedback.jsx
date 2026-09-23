@@ -3,8 +3,15 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { addDoc, collection, doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import Seo from '../components/Seo.jsx'
 import SectionHeading from '../components/SectionHeading.jsx'
+import TestimonialCard from '../components/TestimonialCard.jsx'
 import { usePublicContent } from '../hooks/usePublicContent.jsx'
 import { getFirebaseDb } from '../firebaseClient.js'
+import { isFeaturedTestimonial, sortTestimonials } from '../utils/testimonials.js'
+
+// Le stesse testimonianze in evidenza mostrate in Home: vederle qui, accanto
+// al form, dà fiducia a chi sta per scrivere la propria. Limitate a 3 per non
+// allungare la pagina oltre il form stesso.
+const SIDEBAR_TESTIMONIALS_LIMIT = 3
 
 const RATING_OPTIONS = [5, 4, 3, 2, 1]
 
@@ -20,7 +27,11 @@ function isInvitationUsable(invitation) {
 export default function Feedback() {
   const [searchParams] = useSearchParams()
   const token = searchParams.get('token') || ''
-  const { projects } = usePublicContent()
+  const { projects, testimonials } = usePublicContent()
+  const sidebarTestimonials = sortTestimonials(testimonials.filter(isFeaturedTestimonial)).slice(
+    0,
+    SIDEBAR_TESTIMONIALS_LIMIT,
+  )
 
   const [invitation, setInvitation] = useState(null)
   const [invitationState, setInvitationState] = useState(token ? 'loading' : 'none')
@@ -142,7 +153,15 @@ export default function Feedback() {
       />
 
       <section className="py-14 sm:py-20">
-        <div className="container-page max-w-2xl">
+        <div className="container-page">
+        <div
+          className={
+            sidebarTestimonials.length > 0
+              ? 'grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start'
+              : ''
+          }
+        >
+        <div className="max-w-2xl">
           <SectionHeading
             eyebrow="Feedback"
             title="Com’è stata la tua esperienza?"
@@ -320,6 +339,23 @@ export default function Feedback() {
               )}
             </form>
           )}
+        </div>
+
+        {sidebarTestimonials.length > 0 && (
+          <aside className="lg:sticky lg:top-24">
+            <p className="eyebrow mb-3">Testimonianze</p>
+            <h2 className="text-fluid-xl font-bold text-ink-950">Cosa dicono le persone con cui ho lavorato</h2>
+            <p className="mt-3 text-fluid-sm text-ink-600">
+              Alcune esperienze raccontate da chi ha già lavorato con me.
+            </p>
+            <div className="mt-6 space-y-6">
+              {sidebarTestimonials.map((testimonial) => (
+                <TestimonialCard key={testimonial.id} testimonial={testimonial} />
+              ))}
+            </div>
+          </aside>
+        )}
+        </div>
         </div>
       </section>
     </>
