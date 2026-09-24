@@ -151,7 +151,7 @@ export const CONTENT_BLOCKS = [
   },
   {
     id: 'techStack',
-    label: 'Tech stack',
+    label: 'Tecnologie',
     fields: [
       { key: 'eyebrow', label: 'Eyebrow', type: 'text' },
       { key: 'title', label: 'Titolo', type: 'text' },

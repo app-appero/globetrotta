@@ -3,6 +3,7 @@ import { collection, onSnapshot, query, where } from 'firebase/firestore'
 import { getFirebaseDb } from '../firebaseClient.js'
 import { fallbackContent } from '../data/publicFallback.js'
 import { sortProjects } from '../utils/projectPresentation.js'
+import { sortTestimonials } from '../utils/testimonials.js'
 
 const PublicContentContext = createContext(null)
 const REMOVED_PROJECT_SLUGS = new Set(['oracle-tennis', 'studio-flow', 'doc-pilot'])
@@ -14,6 +15,7 @@ function isPublicProject(project) {
 export function PublicContentProvider({ children }) {
   const [content, setContent] = useState(fallbackContent)
   const [projects, setProjects] = useState([])
+  const [testimonials, setTestimonials] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [retryToken, setRetryToken] = useState(0)
@@ -31,9 +33,15 @@ export function PublicContentProvider({ children }) {
   useEffect(() => {
     let contentReady = false
     let projectsReady = false
+    let testimonialsReady = false
     let active = true
     let unsubscribeContent
     let unsubscribeProjects
+    let unsubscribeTestimonials
+
+    function maybeStopLoading() {
+      if (contentReady && projectsReady && testimonialsReady) setLoading(false)
+    }
 
     try {
       const db = getFirebaseDb()
@@ -49,12 +57,12 @@ export function PublicContentProvider({ children }) {
         })
         setContent(next)
         contentReady = true
-        if (projectsReady) setLoading(false)
+        maybeStopLoading()
       }, (snapshotError) => {
         if (!active) return
         setError(snapshotError.message)
         contentReady = true
-        if (projectsReady) setLoading(false)
+        maybeStopLoading()
       })
       unsubscribeProjects = onSnapshot(query(collection(db, 'projects'), where('status', '!=', 'draft')), (snapshot) => {
         if (!active) return
@@ -67,12 +75,26 @@ export function PublicContentProvider({ children }) {
         })
         setProjects(sortProjects(firestoreProjects.filter(isPublicProject)))
         projectsReady = true
-        if (contentReady) setLoading(false)
+        maybeStopLoading()
       }, (snapshotError) => {
         if (!active) return
         setError(snapshotError.message)
         projectsReady = true
-        if (contentReady) setLoading(false)
+        maybeStopLoading()
+      })
+      // Il sito pubblico può leggere solo le testimonianze approvate (vedi
+      // firestore.rules): questo filtro non è un'ottimizzazione, è l'unica
+      // query che le regole di sicurezza permettono a un visitatore anonimo.
+      unsubscribeTestimonials = onSnapshot(query(collection(db, 'testimonials'), where('status', '==', 'approved')), (snapshot) => {
+        if (!active) return
+        setTestimonials(sortTestimonials(snapshot.docs.map((document) => ({ ...document.data(), id: document.id }))))
+        testimonialsReady = true
+        maybeStopLoading()
+      }, (snapshotError) => {
+        if (!active) return
+        setError(snapshotError.message)
+        testimonialsReady = true
+        maybeStopLoading()
       })
     } catch (initializationError) {
       setError(initializationError.message)
@@ -83,12 +105,13 @@ export function PublicContentProvider({ children }) {
       active = false
       unsubscribeContent?.()
       unsubscribeProjects?.()
+      unsubscribeTestimonials?.()
     }
   }, [retryToken])
 
   const value = useMemo(
-    () => ({ content, projects, loading, error, retry }),
-    [content, projects, loading, error, retry],
+    () => ({ content, projects, testimonials, loading, error, retry }),
+    [content, projects, testimonials, loading, error, retry],
   )
   return <PublicContentContext.Provider value={value}>{children}</PublicContentContext.Provider>
 }

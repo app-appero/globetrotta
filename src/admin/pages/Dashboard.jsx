@@ -4,7 +4,7 @@ import { CONTENT_BLOCKS } from '../schemas/contentBlocks.js'
 export default function Dashboard() {
   return (
     <div>
-      <h1 className="text-fluid-xl font-bold text-ink-950">Dashboard</h1>
+      <h1 className="text-fluid-xl font-bold text-ink-950">Pannello amministrativo</h1>
       <p className="mt-1 text-fluid-sm text-ink-500">
         Gestisci progetti e testi del sito. Dopo ogni modifica, ricorda di eseguire{' '}
         <code className="rounded bg-ink-950/5 px-1.5 py-0.5">npm run publish</code> dal terminale per renderla visibile

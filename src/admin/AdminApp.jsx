@@ -9,6 +9,8 @@ import ProjectsList from './pages/ProjectsList.jsx'
 import ProjectForm from './pages/ProjectForm.jsx'
 import ContentEditor from './pages/ContentEditor.jsx'
 import ContactRequests from './pages/ContactRequests.jsx'
+import Testimonials from './pages/Testimonials.jsx'
+import TestimonialInvitations from './pages/TestimonialInvitations.jsx'
 import { useAdminTheme } from './hooks/useAdminTheme.js'
 
 export default function AdminApp() {
@@ -34,6 +36,8 @@ export default function AdminApp() {
           <Route path="progetti/:id" element={<ProjectForm mode="edit" />} />
           <Route path="contenuti/:blockId" element={<ContentEditor />} />
           <Route path="richieste" element={<ContactRequests />} />
+          <Route path="testimonianze" element={<Testimonials />} />
+          <Route path="testimonianze/inviti" element={<TestimonialInvitations />} />
         </Route>
       </Routes>
     </AuthProvider>

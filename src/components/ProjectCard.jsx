@@ -12,7 +12,7 @@ export default function ProjectCard({ project }) {
       to={`/progetti/${project.slug}`}
       className="card group flex h-full flex-col overflow-hidden"
     >
-      <div className="aspect-[16/9] w-full overflow-hidden bg-ink-950 p-2">
+      <div className="aspect-[16/9] w-full overflow-hidden bg-paper-200 p-2">
         {isPlaceholderImage(project.coverImage) ? (
           <PlaceholderVisual label={project.title} className="rounded-lg" />
         ) : (
