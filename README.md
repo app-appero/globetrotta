@@ -229,17 +229,19 @@ sezione — da browser, senza toccare il codice. Il pubblico legge Firestore dir
 La scheda **Privacy Policy** consente di aggiornare titolo, introduzione, meta description,
 data di aggiornamento e tutte le sezioni con i relativi paragrafi.
 
-I contenuti modificati dal pannello vivono in **Firestore** (e le immagini in **Firebase
-Storage**) finché non li "pubblichi": solo allora vengono scritti nei file statici che il
-sito realmente serve.
+I contenuti modificati dal pannello vivono in **Firestore** e vengono mostrati dal sito
+pubblico in tempo reale. Immagini e video caricati dal pannello vengono salvati in
+**Firebase Storage**. Nel form progetto puoi caricare un video oppure inserire un link
+YouTube/Vimeo; la pagina pubblica mostra la sezione video solo quando il progetto ha un
+video configurato.
 
 ```
 /admin (login) → modifichi progetti/testi → salvataggio istantaneo su Firestore/Storage
-              → il sito pubblico si aggiorna tramite onSnapshot (tranne la Hero)
+              → il sito pubblico si aggiorna tramite onSnapshot
 ```
 
-`npm run publish` aggiorna hosting, regole Firestore e fallback/prerendering. Per modificare la Hero è
-necessario rigenerare e pubblicare la build verificata.
+`npm run publish` serve a pubblicare gli aggiornamenti del codice, le regole e i fallback
+statici; non è necessario per rendere visibili le modifiche ai contenuti salvate da `/admin`.
 
 ### Setup iniziale (una tantum)
 
@@ -273,7 +275,7 @@ necessario rigenerare e pubblicare la build verificata.
 
 ### Testare in locale con gli emulatori Firebase
 
-Per provare il pannello admin (login, Firestore, upload immagini) **senza un progetto
+Per provare il pannello admin (login, Firestore, upload immagini e video) **senza un progetto
 Firebase reale**, si può usare il [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite):
 Auth/Firestore/Storage girano completamente in locale, con una dashboard (Emulator UI) per
 ispezionare dati e utenti — utile anche solo per curiosare prima di configurare Firebase
@@ -315,7 +317,8 @@ Per passare dal test locale al progetto Firebase reale basta rimettere
 
 - Firestore consente lettura pubblica soltanto per `content/*` e `projects/*`, necessari
   al sito; scrittura e tutte le altre collezioni restano riservate all'admin. Le regole
-  Storage mantengono la protezione sulle scritture e la lettura delle immagini pubbliche.
+  Storage mantengono la protezione sulle scritture e la lettura pubblica delle immagini e
+  dei video dei progetti.
 - `/admin` è escluso da sitemap e da indicizzazione (`Disallow: /admin` in
   `public/robots.txt`, meta `noindex` sulle sue pagine).
 - `serviceAccountKey.json` e `.env.local` non vanno mai committati (già in `.gitignore`):

@@ -1,6 +1,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
 import Seo from '../components/Seo.jsx'
 import ProjectGallery from '../components/ProjectGallery.jsx'
+import ProjectVideo from '../components/ProjectVideo.jsx'
 import ProjectGrid from '../components/ProjectGrid.jsx'
 import TestimonialCard from '../components/TestimonialCard.jsx'
 import { usePublicContent } from '../hooks/usePublicContent.jsx'
@@ -24,6 +25,7 @@ const SECTION_LABELS = {
   techStack: 'Tecnologie utilizzate',
   skills: 'Cosa dimostra questo progetto',
   gallery: 'Galleria',
+  video: 'Video di presentazione',
   relatedProjects: 'Progetti correlati',
 }
 
@@ -247,11 +249,20 @@ export default function ProjectDetail() {
             </DetailSection>
           )}
 
-          {(hasAvailableGallery(project) || project.demoVideoUrl) && (
+          {project.demoVideoUrl?.trim() && (
+            <section className="border-t border-ink-800/10 py-10 sm:py-12">
+              <h2 className="text-fluid-xl font-bold text-ink-950">{SECTION_LABELS.video}</h2>
+              <div className="mt-6">
+                <ProjectVideo videoUrl={project.demoVideoUrl} />
+              </div>
+            </section>
+          )}
+
+          {hasAvailableGallery(project) && (
             <section className="border-t border-ink-800/10 py-10 sm:py-12">
               <h2 className="text-fluid-xl font-bold text-ink-950">{SECTION_LABELS.gallery}</h2>
               <div className="mt-6">
-                <ProjectGallery gallery={project.gallery} demoVideoUrl={project.demoVideoUrl} />
+                <ProjectGallery gallery={project.gallery} />
               </div>
             </section>
           )}

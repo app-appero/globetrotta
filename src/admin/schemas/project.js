@@ -92,7 +92,13 @@ export const PROJECT_SCHEMA = [
   { key: 'skills', label: 'Competenze dimostrate (opzionale)', type: 'stringList' },
   { key: 'githubUrl', label: 'GitHub URL (opzionale)', type: 'text' },
   { key: 'liveUrl', label: 'Live URL (opzionale)', type: 'text' },
-  { key: 'demoVideoUrl', label: 'Video demo URL (opzionale, YouTube/Vimeo)', type: 'text' },
+  {
+    key: 'demoVideoUrl',
+    label: 'Video di presentazione (opzionale)',
+    type: 'video',
+    uploadPath: 'projects/videos',
+    helpText: 'Incolla un link YouTube/Vimeo oppure carica un video dal computer.',
+  },
   { key: 'seoTitle', label: 'Titolo SEO', type: 'text' },
   { key: 'seoDescription', label: 'Descrizione SEO', type: 'textarea' },
 ]

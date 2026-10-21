@@ -30,7 +30,7 @@
  * @property {string[]} [skills] - Competenze dimostrate dal progetto.
  * @property {string} [githubUrl] - Link opzionale al repository.
  * @property {string} [liveUrl] - Link opzionale alla demo live.
- * @property {string} [demoVideoUrl] - Link opzionale a un video demo (YouTube/Vimeo) o file locale.
+ * @property {string} [demoVideoUrl] - URL opzionale YouTube/Vimeo o URL del video caricato su Firebase Storage.
  * @property {string} seoTitle - Title dedicato per SEO/social share.
  * @property {string} seoDescription - Description dedicata per SEO/social share.
  */

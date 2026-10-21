@@ -8,6 +8,7 @@ import BooleanField from './BooleanField.jsx'
 import RadioField from './RadioField.jsx'
 import NumberField from './NumberField.jsx'
 import GalleryField from './GalleryField.jsx'
+import VideoField from './VideoField.jsx'
 
 /**
  * Dispatcher generico: dato uno schema di campo { type, ... } renderizza il
@@ -28,6 +29,8 @@ export default function Field({ field, value, onChange }) {
       return <ObjectField value={value ?? {}} onChange={onChange} itemFields={field.itemFields} />
     case 'image':
       return <ImageField value={value ?? ''} onChange={onChange} uploadPath={field.uploadPath} />
+    case 'video':
+      return <VideoField value={value ?? ''} onChange={onChange} uploadPath={field.uploadPath} />
     case 'boolean':
       return <BooleanField value={Boolean(value)} onChange={onChange} label={field.checkboxLabel} />
     case 'radio':
