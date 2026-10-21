@@ -65,6 +65,29 @@ export default function VideoField({ id, value, onChange, uploadPath = 'uploads/
         placeholder="URL YouTube, Vimeo o file video"
         className="w-full rounded-xl border border-ink-800/15 bg-paper-50 px-4 py-2.5 text-fluid-sm text-ink-950 outline-none focus:border-accent-500"
       />
+      {value && (
+        <div className="space-y-3">
+          {value.startsWith('https://firebasestorage.googleapis.com/') && (
+            <video
+              src={value}
+              controls
+              preload="metadata"
+              className="aspect-video w-full max-w-xl rounded-xl bg-ink-950"
+            />
+          )}
+          <button
+            type="button"
+            onClick={() => {
+              onChange('')
+              setError('')
+            }}
+            disabled={uploading}
+            className="text-fluid-xs font-medium text-red-600 hover:underline disabled:opacity-60"
+          >
+            Elimina video dal progetto
+          </button>
+        </div>
+      )}
       <div className="flex flex-wrap items-center gap-3">
         <label className="btn-secondary cursor-pointer whitespace-nowrap text-fluid-xs">
           {uploading ? `Caricamento ${progress}%...` : 'Carica un video'}
