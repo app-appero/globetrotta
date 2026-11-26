@@ -10,7 +10,9 @@
     "postbuild": "node scripts/generate-sitemap.js",
     "seed-content": "node scripts/seed-content.mjs",
     "sync-content": "node scripts/sync-content.mjs",
-    "publish": "npm run sync-content && npm run build && firebase deploy",
+    "publish": "npm run sync-content && npm run build && firebase deploy --only hosting,firestore,storage",
+    "test": "node --test src/admin/inbox.test.js functions/test/notifications.test.js",
+    "deploy:notifications": "firebase deploy --only functions",
     "emulators": "firebase emulators:start --project demo-globetrotta --import=./.emulator-data --export-on-exit",
     "emulators:seed": "firebase emulators:exec --project demo-globetrotta --export-on-exit=./.emulator-data \"npm run seed-content\""
   },

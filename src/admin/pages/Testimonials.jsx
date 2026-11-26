@@ -245,7 +245,8 @@ export default function Testimonials() {
           <h1 className="text-fluid-xl font-bold text-ink-950">Testimonianze</h1>
           <p className="mt-1 text-fluid-sm text-ink-500">
             I feedback inviati dal modulo pubblico entrano sempre come "In attesa": nulla viene pubblicato senza la
-            tua approvazione.
+            tua approvazione. Il numero accanto a Testimonianze conta solo questi feedback, finché non li approvi o
+            li rifiuti.
           </p>
         </div>
         <div className="flex gap-2">

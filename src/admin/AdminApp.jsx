@@ -11,6 +11,7 @@ import ContentEditor from './pages/ContentEditor.jsx'
 import ContactRequests from './pages/ContactRequests.jsx'
 import Testimonials from './pages/Testimonials.jsx'
 import TestimonialInvitations from './pages/TestimonialInvitations.jsx'
+import { InboxAlertsProvider } from './InboxAlerts.jsx'
 import { useAdminTheme } from './hooks/useAdminTheme.js'
 
 export default function AdminApp() {
@@ -26,7 +27,9 @@ export default function AdminApp() {
         <Route
           element={
             <RequireAuth>
-              <AdminLayout />
+              <InboxAlertsProvider>
+                <AdminLayout />
+              </InboxAlertsProvider>
             </RequireAuth>
           }
         >
