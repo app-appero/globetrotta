@@ -4,7 +4,7 @@ const DEFAULT_ENV = {
   SMTP_USER: 'info@globetrotta.it',
   SMTP_FROM: 'info@globetrotta.it',
   NOTIFY_TO: 'info@globetrotta.it',
-  SITE_URL: 'https://globetrotta.com',
+  SITE_URL: 'https://globetrotta.it',
 }
 
 function configuredValue(env, key) {

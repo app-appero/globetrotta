@@ -3,7 +3,7 @@ import test from 'node:test'
 import { buildMail, isMailConfigured, readMailConfig } from '../mailConfig.js'
 import { buildContactNotification, buildFeedbackNotification } from '../notifyMessages.js'
 
-const siteUrl = 'https://globetrotta.com'
+const siteUrl = 'https://globetrotta.it'
 
 test('la richiesta di lavoro diventa un’email con risposta diretta al mittente', () => {
   const notification = buildContactNotification({
@@ -19,7 +19,7 @@ test('la richiesta di lavoro diventa un’email con risposta diretta al mittente
   assert.equal(notification.replyTo, 'ada@example.com')
   assert.match(notification.text, /Esigenza: AI applicata a un processo/)
   assert.match(notification.text, /Azienda: Analytical/)
-  assert.match(notification.text, /https:\/\/globetrotta\.com\/admin\/richieste/)
+  assert.match(notification.text, /https:\/\/globetrotta\.it\/admin\/richieste/)
 })
 
 test('un’email non valida non finisce in reply-to', () => {
@@ -46,7 +46,7 @@ test('il feedback pubblico in attesa genera la notifica', () => {
 
   assert.equal(notification.subject, 'Nuovo feedback da Giulia')
   assert.match(notification.text, /Valutazione: 5\/5/)
-  assert.match(notification.text, /https:\/\/globetrotta\.com\/admin\/testimonianze/)
+  assert.match(notification.text, /https:\/\/globetrotta\.it\/admin\/testimonianze/)
 })
 
 test('una testimonianza creata dall’admin non genera email', () => {
@@ -74,7 +74,7 @@ test('senza variabili usa la casella Aruba del sito, ma non risulta pronta senza
   assert.equal(config.user, 'info@globetrotta.it')
   assert.equal(config.from, 'info@globetrotta.it')
   assert.equal(config.to, 'info@globetrotta.it')
-  assert.equal(config.siteUrl, 'https://globetrotta.com')
+  assert.equal(config.siteUrl, 'https://globetrotta.it')
   assert.equal(isMailConfigured(config), false)
 })
 
