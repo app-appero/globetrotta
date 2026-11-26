@@ -1,8 +1,11 @@
 import { logger } from 'firebase-functions'
+import { defineSecret } from 'firebase-functions/params'
 import { onDocumentCreated } from 'firebase-functions/v2/firestore'
 import nodemailer from 'nodemailer'
 import { buildMail, isMailConfigured, readMailConfig } from './mailConfig.js'
 import { buildContactNotification, buildFeedbackNotification } from './notifyMessages.js'
+
+const smtpPass = defineSecret('SMTP_PASS')
 
 async function deliver(notification) {
   if (!notification) return
@@ -26,10 +29,16 @@ async function deliver(notification) {
   }
 }
 
-export const notifyContactRequest = onDocumentCreated('contactRequests/{requestId}', (event) => {
+export const notifyContactRequest = onDocumentCreated({
+  document: 'contactRequests/{requestId}',
+  secrets: [smtpPass],
+}, (event) => {
   return deliver(buildContactNotification(event.data?.data(), readMailConfig().siteUrl))
 })
 
-export const notifyFeedback = onDocumentCreated('testimonials/{testimonialId}', (event) => {
+export const notifyFeedback = onDocumentCreated({
+  document: 'testimonials/{testimonialId}',
+  secrets: [smtpPass],
+}, (event) => {
   return deliver(buildFeedbackNotification(event.data?.data(), readMailConfig().siteUrl))
 })

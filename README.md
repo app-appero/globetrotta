@@ -322,25 +322,25 @@ card della home admin e nel titolo della scheda. Il pulsante **Attiva avvisi** c
 browser il permesso di mostrare una notifica di sistema quando ne arriva una mentre il
 pannello resta aperto.
 
-Per ricevere un’email anche a pannello chiuso serve una Cloud Function. Parte quando
-viene creato un documento in `contactRequests` o un feedback pubblico in `testimonials`
+Per ricevere un’email anche a pannello chiuso, la Cloud Function parte quando viene
+creata una richiesta in `contactRequests` o un feedback pubblico in `testimonials`
 (`source: feedback-form`, stato `pending`). Una testimonianza inserita a mano dall’admin
-non genera email. La funzione non parte finché non configuri l’SMTP e non la pubblichi:
-il progetto Firebase deve essere sul piano **Blaze**.
+non genera email. Host, mittente e destinatario sono già in `functions/.env`:
+l’account Gmail `trottarosario@gmail.com`. Il progetto Firebase deve essere sul piano **Blaze**.
 
-1. Copia `functions/.env.example` in `functions/.env.globetrotta` e inserisci host, utente,
-   password e destinatario. Con Gmail serve una [password per le app](https://myaccount.google.com/apppasswords),
-   non la password dell’account. Il file non va committato.
-2. Dalla root del progetto:
+Manca solo la password, che non va messa nel repository. Con Gmail serve una
+[password per le app](https://myaccount.google.com/apppasswords), non la password dell’account.
+Dalla root del progetto, una volta sola:
 
-   ```bash
-   npm run deploy:notifications
-   ```
+```bash
+firebase functions:secrets:set SMTP_PASS
+npm run deploy:notifications
+```
 
-Senza quelle variabili la funzione, se pubblicata, registra solo un avviso nei log e non
-invia nulla. `npm run publish` continua a pubblicare sito e regole, senza le funzioni.
+Il primo comando chiede la password nel terminale e la salva in Secret Manager.
+`npm run publish` continua a pubblicare sito e regole, senza le funzioni.
 `npm run emulators` avvia anche questa funzione: la prima volta esegui `npm install`
-dentro `functions/`.
+dentro `functions/`. Senza il secret l’emulatore non invia email.
 
 ### Sicurezza
 

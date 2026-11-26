@@ -7,8 +7,12 @@ dist-ssr
 .DS_Store
 npm-debug.log*
 
-# Admin dashboard: credenziali Firebase, mai da committare
+# Admin dashboard: credenziali Firebase, mai da committare.
+# functions/.env contiene solo host, mittente e destinatario della notifica,
+# non la password SMTP.
 .env
+!.env.example
+!functions/.env
 .env.local
 serviceAccountKey.json
 

@@ -67,8 +67,18 @@ test('un feedback già approvato non genera email', () => {
   }, siteUrl), null)
 })
 
+test('senza variabili usa Gmail e la casella admin, ma non risulta pronta senza password', () => {
+  const config = readMailConfig({})
+  assert.equal(config.host, 'smtp.gmail.com')
+  assert.equal(config.port, 465)
+  assert.equal(config.user, 'trottarosario@gmail.com')
+  assert.equal(config.to, 'trottarosario@gmail.com')
+  assert.equal(config.siteUrl, 'https://globetrotta.com')
+  assert.equal(isMailConfigured(config), false)
+})
+
 test('la configurazione SMTP è completa solo con host, credenziali e indirizzi validi', () => {
-  assert.equal(isMailConfigured(readMailConfig({})), false)
+  assert.equal(isMailConfigured(readMailConfig({ SMTP_PASS: '' })), false)
   const config = readMailConfig({
     SMTP_HOST: 'smtp.gmail.com',
     SMTP_PORT: '587',

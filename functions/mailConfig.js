@@ -1,5 +1,17 @@
-const DEFAULT_NOTIFY_TO = 'trottarosario@gmail.com'
-const DEFAULT_SITE_URL = 'https://globetrotta.com'
+const DEFAULT_ENV = {
+  SMTP_HOST: 'smtp.gmail.com',
+  SMTP_PORT: '465',
+  SMTP_USER: 'trottarosario@gmail.com',
+  SMTP_FROM: 'trottarosario@gmail.com',
+  NOTIFY_TO: 'trottarosario@gmail.com',
+  SITE_URL: 'https://globetrotta.com',
+}
+
+function configuredValue(env, key) {
+  const value = env?.[key]
+  if (value == null || String(value).trim() === '') return DEFAULT_ENV[key] || ''
+  return value
+}
 
 export function oneLine(value, max = 200) {
   return String(value ?? '')
@@ -21,16 +33,16 @@ function mailbox(value) {
 }
 
 export function readMailConfig(env = process.env) {
-  const port = Number(env.SMTP_PORT)
-  const user = oneLine(env.SMTP_USER, 320)
-  const siteUrl = oneLine(env.SITE_URL, 300).replace(/\/$/, '') || DEFAULT_SITE_URL
+  const port = Number(configuredValue(env, 'SMTP_PORT'))
+  const user = oneLine(configuredValue(env, 'SMTP_USER'), 320)
+  const siteUrl = oneLine(configuredValue(env, 'SITE_URL'), 300).replace(/\/$/, '')
   return {
-    host: oneLine(env.SMTP_HOST, 200),
+    host: oneLine(configuredValue(env, 'SMTP_HOST'), 200),
     port: Number.isInteger(port) && port > 0 ? port : 465,
     user,
-    pass: String(env.SMTP_PASS || '').replace(/\s+/g, ''),
-    from: oneLine(env.SMTP_FROM, 320) || user,
-    to: oneLine(env.NOTIFY_TO, 320) || DEFAULT_NOTIFY_TO,
+    pass: String(env?.SMTP_PASS || '').replace(/\s+/g, ''),
+    from: oneLine(configuredValue(env, 'SMTP_FROM'), 320) || user,
+    to: oneLine(configuredValue(env, 'NOTIFY_TO'), 320),
     siteUrl,
   }
 }
