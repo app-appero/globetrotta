@@ -1,9 +1,9 @@
 const DEFAULT_ENV = {
-  SMTP_HOST: 'smtp.gmail.com',
+  SMTP_HOST: 'smtps.aruba.it',
   SMTP_PORT: '465',
-  SMTP_USER: 'trottarosario@gmail.com',
-  SMTP_FROM: 'trottarosario@gmail.com',
-  NOTIFY_TO: 'trottarosario@gmail.com',
+  SMTP_USER: 'info@globetrotta.it',
+  SMTP_FROM: 'info@globetrotta.it',
+  NOTIFY_TO: 'info@globetrotta.it',
   SITE_URL: 'https://globetrotta.com',
 }
 

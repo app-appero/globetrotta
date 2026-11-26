@@ -326,10 +326,10 @@ Per ricevere un’email anche a pannello chiuso, la Cloud Function parte quando 
 creata una richiesta in `contactRequests` o un feedback pubblico in `testimonials`
 (`source: feedback-form`, stato `pending`). Una testimonianza inserita a mano dall’admin
 non genera email. Host, mittente e destinatario sono già in `functions/.env`:
-l’account Gmail `trottarosario@gmail.com`. Il progetto Firebase deve essere sul piano **Blaze**.
+la casella Aruba `info@globetrotta.it`, inviata dal server `smtps.aruba.it` sulla porta 465.
+Il progetto Firebase deve essere sul piano **Blaze**.
 
-Manca solo la password, che non va messa nel repository. Con Gmail serve una
-[password per le app](https://myaccount.google.com/apppasswords), non la password dell’account.
+Manca solo la password di quella casella, che non va messa nel repository.
 Dalla root del progetto, una volta sola:
 
 ```bash

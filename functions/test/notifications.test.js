@@ -67,12 +67,13 @@ test('un feedback già approvato non genera email', () => {
   }, siteUrl), null)
 })
 
-test('senza variabili usa Gmail e la casella admin, ma non risulta pronta senza password', () => {
+test('senza variabili usa la casella Aruba del sito, ma non risulta pronta senza password', () => {
   const config = readMailConfig({})
-  assert.equal(config.host, 'smtp.gmail.com')
+  assert.equal(config.host, 'smtps.aruba.it')
   assert.equal(config.port, 465)
-  assert.equal(config.user, 'trottarosario@gmail.com')
-  assert.equal(config.to, 'trottarosario@gmail.com')
+  assert.equal(config.user, 'info@globetrotta.it')
+  assert.equal(config.from, 'info@globetrotta.it')
+  assert.equal(config.to, 'info@globetrotta.it')
   assert.equal(config.siteUrl, 'https://globetrotta.com')
   assert.equal(isMailConfigured(config), false)
 })
