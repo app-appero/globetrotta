@@ -29,15 +29,19 @@ async function deliver(notification) {
   }
 }
 
-export const notifyContactRequest = onDocumentCreated({
+const region = 'europe-west8'
+
+export const mailContactRequest = onDocumentCreated({
   document: 'contactRequests/{requestId}',
+  region,
   secrets: [smtpPass],
 }, (event) => {
   return deliver(buildContactNotification(event.data?.data(), readMailConfig().siteUrl))
 })
 
-export const notifyFeedback = onDocumentCreated({
+export const mailFeedback = onDocumentCreated({
   document: 'testimonials/{testimonialId}',
+  region,
   secrets: [smtpPass],
 }, (event) => {
   return deliver(buildFeedbackNotification(event.data?.data(), readMailConfig().siteUrl))
