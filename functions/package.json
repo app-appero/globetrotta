@@ -1,0 +1,14 @@
+{
+  "name": "globetrotta-functions",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^14.5.1",
+    "firebase-functions": "^7.4.0",
+    "nodemailer": "^7.0.11"
+  }
+}

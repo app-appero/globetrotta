@@ -107,7 +107,7 @@ npm run preview
 
    ```bash
    npm run build
-   firebase deploy
+   firebase deploy --only hosting,firestore,storage
    ```
 
 `firebase.json` è già configurato per servire `dist/` come sito statico, con `cleanUrls`
@@ -184,7 +184,7 @@ sistema è completamente data-driven. Per aggiungere un progetto:
 
    ```bash
    npm run build
-   firebase deploy
+   firebase deploy --only hosting,firestore,storage
    ```
 
    In fase di build, `vite-react-ssg` legge automaticamente tutti i progetti presenti in
@@ -242,6 +242,7 @@ video configurato.
 
 `npm run publish` serve a pubblicare gli aggiornamenti del codice, le regole e i fallback
 statici; non è necessario per rendere visibili le modifiche ai contenuti salvate da `/admin`.
+Non pubblica le Cloud Functions delle notifiche: per quelle usa `npm run deploy:notifications`.
 
 ### Setup iniziale (una tantum)
 
@@ -312,6 +313,34 @@ sul serio.
 Per passare dal test locale al progetto Firebase reale basta rimettere
 `VITE_USE_FIREBASE_EMULATORS=false` e compilare le altre variabili `VITE_FIREBASE_*` in
 `.env.local` come descritto nel setup qui sopra.
+
+### Notifiche su richieste e feedback
+
+Il pannello, una volta aperto, mostra quante richieste sono ancora "Nuova" e quanti
+feedback pubblici sono "In attesa". Il numero compare accanto alle voci di menu, sulle
+card della home admin e nel titolo della scheda. Il pulsante **Attiva avvisi** chiede al
+browser il permesso di mostrare una notifica di sistema quando ne arriva una mentre il
+pannello resta aperto.
+
+Per ricevere un’email anche a pannello chiuso, la Cloud Function parte quando viene
+creata una richiesta in `contactRequests` o un feedback pubblico in `testimonials`
+(`source: feedback-form`, stato `pending`). Una testimonianza inserita a mano dall’admin
+non genera email. Host, mittente e destinatario sono già in `functions/.env`:
+la casella Aruba `info@globetrotta.it`, inviata dal server `smtps.aruba.it` sulla porta 465.
+Il progetto Firebase deve essere sul piano **Blaze**.
+
+Manca solo la password di quella casella, che non va messa nel repository.
+Dalla root del progetto, una volta sola:
+
+```bash
+firebase functions:secrets:set SMTP_PASS
+npm run deploy:notifications
+```
+
+Il primo comando chiede la password nel terminale e la salva in Secret Manager.
+`npm run publish` continua a pubblicare sito e regole, senza le funzioni.
+`npm run emulators` avvia anche questa funzione: la prima volta esegui `npm install`
+dentro `functions/`. Senza il secret l’emulatore non invia email.
 
 ### Sicurezza
 

@@ -17,7 +17,10 @@ export default function ContactRequests() {
   return (
     <div>
       <h1 className="text-fluid-xl font-bold text-ink-950">Richieste di contatto</h1>
-      <p className="mt-1 text-fluid-sm text-ink-500">Le richieste inviate dal form vengono conservate in Firestore e sono visibili solo agli admin.</p>
+      <p className="mt-1 text-fluid-sm text-ink-500">
+        Le richieste inviate dal form vengono conservate in Firestore e sono visibili solo agli admin.
+        Il numero accanto a Richieste conta quelle ancora segnate come Nuova.
+      </p>
 
       {loading && <p className="mt-8 text-fluid-sm text-ink-500">Caricamento...</p>}
       {error && <p className="mt-8 text-fluid-sm text-red-600">Impossibile caricare le richieste: {error}</p>}
